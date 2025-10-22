@@ -4,7 +4,7 @@
         v-model="naviDrawer"
         :mini-variant="navigationStyle === 'iconsOnly'"
         :width="navigationWidth"
-        permanent
+        :temporary="boolNaviTemp"
         clipped
         app
         :style="sidebarCssVars">

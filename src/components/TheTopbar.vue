@@ -1,23 +1,20 @@
 <template>
     <div>
-        <v-app-bar 
-            app 
-            elevate-on-scroll 
-            :height="56" 
-            class="automation-topbar pa-0" 
+        <v-app-bar
+            app
+            elevate-on-scroll
+            :height="56"
+            class="automation-topbar pa-0"
             clipped-left
             :elevation="0"
-            color="transparent"
-        >
+            color="transparent">
             <!-- LEFT SIDE: Logo and Title -->
             <div class="d-flex align-center">
                 <!-- Logo Container -->
                 <div class="logo-container">
-                    <div class="logo-icon">
-                        <span class="logo-text">A</span>
-                    </div>
+                    <img class="logo-svg" src="/img/alhs-logo.svg" alt="Logo" />
                 </div>
-                
+
                 <!-- Title -->
                 <div class="title-container">
                     <h1 class="title-text">Automation System</h1>
@@ -42,8 +39,7 @@
                     class="action-button upload-button"
                     :elevation="0"
                     :loading="loadings.includes('btnUploadAndStart')"
-                    @click="btnUploadAndStart"
-                >
+                    @click="btnUploadAndStart">
                     <v-icon left size="16" class="mr-2">{{ mdiFileUpload }}</v-icon>
                     Upload & Print
                 </v-btn>
@@ -54,14 +50,13 @@
                     class="action-button emergency-button"
                     :elevation="0"
                     :loading="loadings.includes('topbarEmergencyStop')"
-                    @click="btnEmergencyStop"
-                >
+                    @click="btnEmergencyStop">
                     <v-icon left size="16" class="mr-2">{{ mdiAlertOctagonOutline }}</v-icon>
                     Emergency Stop
                 </v-btn>
 
                 <!-- Divider -->
-                <v-divider vertical class="mx-2" style="height: 16px; opacity: 0.1;"></v-divider>
+                <v-divider vertical class="mx-2" style="height: 16px; opacity: 0.1"></v-divider>
 
                 <!-- Icon Buttons -->
                 <the-settings-menu />
@@ -358,6 +353,14 @@ export default class TheTopbar extends Mixins(BaseMixin, ThemeMixin) {
     justify-content: center;
 }
 
+.logo-svg {
+    width: 28px;
+    height: 28px;
+    display: block;
+    border-radius: 6px;
+    object-fit: contain;
+}
+
 .logo-text {
     color: #ffffff;
     font-family: Arial, sans-serif;
@@ -435,12 +438,12 @@ export default class TheTopbar extends Mixins(BaseMixin, ThemeMixin) {
     .title-text {
         font-size: 14px;
     }
-    
+
     .action-button {
         font-size: 12px;
         height: 28px;
     }
-    
+
     .automation-topbar .v-btn.v-btn--icon {
         width: 28px !important;
         height: 28px !important;

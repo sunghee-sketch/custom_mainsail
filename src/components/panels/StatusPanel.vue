@@ -50,13 +50,13 @@
                     <span class="button-label">Pause</span>
                     <v-btn icon class="button-icon">
                         <v-icon size="16">{{ mdiPause }}</v-icon>
-                    </v-btn>
+                        </v-btn>
                 </div>
                 <div class="action-button stop-button">
                     <span class="button-label">Stop</span>
                     <v-btn icon class="button-icon">
                         <v-icon size="16">{{ mdiStop }}</v-icon>
-                    </v-btn>
+                            </v-btn>
                 </div>
             </div>
         </div>

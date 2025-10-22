@@ -697,14 +697,17 @@
         "Yes": "네"
     },
     "Router": {
+        "Config": "설정",
         "Console": "콘솔 명령",
         "Dashboard": "대시보드",
+        "Device": "장치",
         "G-Code Files": "G-Code 파일",
         "G-Code Viewer": "G-Code 뷰어",
         "Heightmap": "베드 레벨 맵",
         "History": "작업 내역",
-        "Machine": "프린터 설정",
+        "Method": "방법",
         "Printers": "원격 프린터",
+        "Sequence": "시퀀스",
         "Timelapse": "타임랩스",
         "Webcam": "웹캠"
     },
