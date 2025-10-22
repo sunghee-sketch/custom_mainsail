@@ -416,6 +416,20 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
+    margin-left: 260px !important;
+    transition: margin-left 0.3s ease;
+}
+
+/* Sidebar collapsed state */
+.v-navigation-drawer--mini-variant ~ #content {
+    margin-left: 56px !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 1264px) {
+    #content {
+        margin-left: 0 !important;
+    }
 }
 
 /*noinspection CssUnusedSymbol*/

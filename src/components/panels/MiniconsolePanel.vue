@@ -1,88 +1,94 @@
 <template>
-    <panel
-        v-if="socketIsConnected && klipperState !== 'disconnected'"
-        :icon="mdiConsoleLine"
-        :title="$t('Panels.MiniconsolePanel.Headline')"
-        :collapsible="true"
-        card-class="miniconsole-panel"
-        :hide-buttons-on-collapse="true">
-        <template #buttons>
-            <v-btn icon tile @click="clearConsole">
-                <v-icon small>{{ mdiTrashCan }}</v-icon>
-            </v-btn>
-            <command-help-modal :in-toolbar="true" @onCommand="commandClick($event)" />
-            <v-menu
-                :offset-y="true"
-                :close-on-content-click="false"
-                :title="$t('Panels.MiniconsolePanel.SetupConsole')">
-                <template #activator="{ on, attrs }">
-                    <v-btn icon tile v-bind="attrs" v-on="on">
-                        <v-icon small>{{ mdiCog }}</v-icon>
-                    </v-btn>
-                </template>
-                <v-list>
-                    <v-list-item v-if="consoleDirection === 'shell'" class="minHeight36">
-                        <v-checkbox
-                            v-model="autoscroll"
-                            class="mt-0"
-                            hide-details
-                            :label="$t('Panels.MiniconsolePanel.Autoscroll')" />
-                    </v-list-item>
-                    <v-list-item class="minHeight36">
-                        <v-checkbox
-                            v-model="hideWaitTemperatures"
-                            class="mt-0"
-                            hide-details
-                            :label="$t('Panels.MiniconsolePanel.HideTemperatures')" />
-                    </v-list-item>
-                    <v-list-item v-if="moonrakerComponents.includes('timelapse')" class="minHeight36">
-                        <v-checkbox
-                            v-model="hideTlCommands"
-                            class="mt-0"
-                            hide-details
-                            :label="$t('Panels.MiniconsolePanel.HideTimelapse')" />
-                    </v-list-item>
-                    <v-list-item v-for="(filter, index) in customFilters" :key="index" class="minHeight36">
-                        <v-checkbox
-                            v-model="filter.bool"
-                            class="mt-0"
-                            hide-details
-                            :label="filter.name"
-                            @change="toggleFilter(index, filter)" />
-                    </v-list-item>
-                    <v-list-item class="minHeight36">
-                        <v-checkbox
-                            v-model="rawOutput"
-                            class="mt-0"
-                            hide-details
-                            :label="$t('Panels.MiniconsolePanel.RawOutput')" />
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-        </template>
-        <div class="d-flex flex-column">
-            <v-card-text :class="consoleDirection === 'table' ? 'order-1' : 'order-2'">
-                <console-textarea ref="gcodeCommandField" />
-            </v-card-text>
-            <v-card-text :class="(consoleDirection === 'table' ? 'order-2' : 'order-1') + ' pa-0'">
-                <v-row>
-                    <v-col>
-                        <overlay-scrollbars
-                            ref="miniConsoleScroll"
-                            :style="'height: ' + consoleHeight + 'px;'"
-                            :options="{}">
-                            <console-table
-                                ref="console"
-                                :events="events"
-                                :is-mini="true"
-                                @command-click="commandClick" />
-                            <v-divider />
-                        </overlay-scrollbars>
-                    </v-col>
-                </v-row>
-            </v-card-text>
+    <div v-if="socketIsConnected && klipperState !== 'disconnected'" class="figma-panel console-panel">
+        <!-- Panel Header -->
+        <div class="panel-header">
+            <div class="header-left">
+                <div class="icon-container">
+                    <span class="console-icon">$</span>
+                </div>
+                <div class="title-container">
+                    <h3 class="panel-title">Console</h3>
+                </div>
+            </div>
+            <div class="header-right">
+                <v-btn icon small class="header-button" @click="clearConsole">
+                    <v-icon size="16">{{ mdiTrashCan }}</v-icon>
+                </v-btn>
+                <command-help-modal :in-toolbar="true" @onCommand="commandClick($event)" />
+                <v-menu
+                    :offset-y="true"
+                    :close-on-content-click="false"
+                    :title="$t('Panels.MiniconsolePanel.SetupConsole')">
+                    <template #activator="{ on, attrs }">
+                        <v-btn icon small class="header-button" v-bind="attrs" v-on="on">
+                            <v-icon size="16">{{ mdiCog }}</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item v-if="consoleDirection === 'shell'" class="minHeight36">
+                            <v-checkbox
+                                v-model="autoscroll"
+                                class="mt-0"
+                                hide-details
+                                :label="$t('Panels.MiniconsolePanel.Autoscroll')" />
+                        </v-list-item>
+                        <v-list-item class="minHeight36">
+                            <v-checkbox
+                                v-model="hideWaitTemperatures"
+                                class="mt-0"
+                                hide-details
+                                :label="$t('Panels.MiniconsolePanel.HideTemperatures')" />
+                        </v-list-item>
+                        <v-list-item v-if="moonrakerComponents.includes('timelapse')" class="minHeight36">
+                            <v-checkbox
+                                v-model="hideTlCommands"
+                                class="mt-0"
+                                hide-details
+                                :label="$t('Panels.MiniconsolePanel.HideTimelapse')" />
+                        </v-list-item>
+                        <v-list-item v-for="(filter, index) in customFilters" :key="index" class="minHeight36">
+                            <v-checkbox
+                                v-model="filter.bool"
+                                class="mt-0"
+                                hide-details
+                                :label="filter.name"
+                                @change="toggleFilter(index, filter)" />
+                        </v-list-item>
+                        <v-list-item class="minHeight36">
+                            <v-checkbox
+                                v-model="rawOutput"
+                                class="mt-0"
+                                hide-details
+                                :label="$t('Panels.MiniconsolePanel.RawOutput')" />
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+            </div>
         </div>
-    </panel>
+
+        <!-- Divider -->
+        <div class="panel-divider"></div>
+
+        <!-- Panel Content -->
+        <div class="panel-content">
+            <!-- Console Output Area -->
+            <div class="console-output">
+                <overlay-scrollbars ref="miniConsoleScroll" :style="'height: ' + consoleHeight + 'px;'" :options="{}">
+                    <console-table ref="console" :events="events" :is-mini="true" @command-click="commandClick" />
+                </overlay-scrollbars>
+            </div>
+
+            <!-- Send Code Input -->
+            <div class="send-code-section">
+                <div class="input-container">
+                    <console-textarea ref="gcodeCommandField" />
+                </div>
+                <v-btn icon class="send-button">
+                    <v-icon size="16">{{ mdiSend }}</v-icon>
+                </v-btn>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -90,7 +96,7 @@ import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import ConsoleTable from '@/components/console/ConsoleTable.vue'
 import Panel from '@/components/ui/Panel.vue'
-import { mdiCog, mdiConsoleLine, mdiTrashCan } from '@mdi/js'
+import { mdiCog, mdiConsoleLine, mdiTrashCan, mdiSend } from '@mdi/js'
 import CommandHelpModal from '@/components/console/CommandHelpModal.vue'
 import ConsoleMixin from '@/components/mixins/console'
 import ConsoleTextarea from '@/components/inputs/ConsoleTextarea.vue'
@@ -106,6 +112,7 @@ export default class MiniconsolePanel extends Mixins(BaseMixin, ConsoleMixin) {
     mdiTrashCan = mdiTrashCan
     mdiConsoleLine = mdiConsoleLine
     mdiCog = mdiCog
+    mdiSend = mdiSend
 
     @Ref() readonly miniConsoleScroll!: any
     @Ref() readonly gcodeCommandField!: typeof ConsoleTextarea
@@ -162,11 +169,221 @@ export default class MiniconsolePanel extends Mixins(BaseMixin, ConsoleMixin) {
 </script>
 
 <style scoped>
+.figma-panel {
+    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-height: 300px;
+}
+
+.figma-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    height: 44px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-container {
+    width: 18px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.console-icon {
+    color: #00bcd4;
+    font-family: Consolas, monospace;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+.title-container {
+    flex: 1;
+}
+
+.panel-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.header-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.panel-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.13) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.panel-content {
+    padding: 16px;
+    background: linear-gradient(135deg, #101828 0%, #000000 50%, #101828 100%);
+    border-radius: 0 0 10px 10px;
+    position: relative;
+    height: calc(100% - 45px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(33, 150, 243, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+.console-output {
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 12px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.send-code-section {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.input-container {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.send-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: #2196f3;
+    color: white;
+}
+
+.send-button:hover {
+    background: #1976d2;
+}
+
+/* Console Table Styling */
 .consoleTable {
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: none;
+    background: transparent;
 }
 
 html.theme--light .consoleTable {
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
+    border-top: none;
+    background: transparent;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .panel-header {
+        padding: 12px 16px;
+    }
+
+    .panel-title {
+        font-size: 14px;
+    }
+
+    .panel-content {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .console-output {
+        padding: 10px;
+    }
+
+    .input-container {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .figma-panel {
+        border-radius: 10px;
+    }
+
+    .panel-header {
+        padding: 10px 12px;
+    }
+
+    .icon-container {
+        width: 16px;
+        height: 32px;
+    }
+
+    .console-icon {
+        font-size: 11px;
+    }
+
+    .panel-title {
+        font-size: 13px;
+    }
+
+    .send-button {
+        width: 32px;
+        height: 32px;
+    }
 }
 </style>

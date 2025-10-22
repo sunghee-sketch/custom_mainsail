@@ -1,111 +1,213 @@
-<style scoped></style>
-
 <template>
-    <panel
-        v-if="socketIsConnected"
-        :icon="mdiWebcam"
-        :title="$t('Panels.WebcamPanel.Headline')"
-        :collapsible="$route.fullPath !== '/cam'"
-        card-class="webcam-panel"
-        :margin-bottom="currentPage !== 'page'">
-        <template #buttons>
-            <v-menu v-if="showSwitch" :offset-y="true">
-                <template #activator="{ on, attrs }">
-                    <v-btn text tile v-bind="attrs" v-on="on">
-                        <v-icon v-if="'icon' in currentCam" small class="mr-2">
-                            {{ convertWebcamIcon(currentCam.icon) }}
-                        </v-icon>
-                        <span class="d-none d-md-block">{{ 'name' in currentCam ? currentCam.name : 'unknown' }}</span>
-                        <v-icon small>{{ mdiMenuDown }}</v-icon>
-                    </v-btn>
-                </template>
-                <v-list dense class="py-0">
-                    <v-list-item link @click="currentCamId = 'all'">
-                        <v-list-item-icon class="mr-2">
-                            <v-icon small class="mt-1">{{ mdiViewGrid }}</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ $t('Panels.WebcamPanel.All') }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item v-for="webcam of webcams" :key="webcam.name" link @click="currentCamId = webcam.name">
-                        <v-list-item-icon class="mr-2">
-                            <v-icon small class="mt-1">{{ convertWebcamIcon(webcam.icon) }}</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title v-text="webcam.name" />
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-        </template>
-        <v-card-text v-if="webcams.length" class="px-0 py-0 content d-inline-block">
-            <v-row>
-                <v-col class="pb-0" style="position: relative">
-                    <webcam-wrapper :webcam="currentCam" :page="currentPage" />
-                </v-col>
-            </v-row>
-        </v-card-text>
-        <v-card-text v-else>
-            <p class="text-center mb-0 text--disabled">{{ $t('Panels.WebcamPanel.NoWebcam') }}</p>
-        </v-card-text>
-    </panel>
+    <div class="figma-panel webcam-panel">
+        <!-- Panel Header -->
+        <div class="panel-header">
+            <div class="header-left">
+                <div class="icon-container">
+                    <v-icon size="16" color="rgba(255,255,255,0.7)">{{ mdiWebcam }}</v-icon>
+                </div>
+                <div class="title-container">
+                    <h3 class="panel-title">WebCam</h3>
+                </div>
+            </div>
+            <div class="header-right">
+                <v-btn icon small class="header-button">
+                    <v-icon size="16">{{ mdiMenuDown }}</v-icon>
+                </v-btn>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="panel-divider"></div>
+
+        <!-- Panel Content -->
+        <div class="panel-content">
+            <div class="no-webcam">
+                <div class="no-webcam-icon">
+                    <v-icon size="56" color="rgba(255,255,255,0.3)">{{ mdiWebcam }}</v-icon>
+                </div>
+                <p class="text-center mb-0 text--disabled">Webcam Panel Ready</p>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Prop } from 'vue-property-decorator'
-import BaseMixin from '../mixins/base'
-import Panel from '@/components/ui/Panel.vue'
-import { GuiWebcamStateWebcam } from '@/store/gui/webcams/types'
-import { mdiMenuDown, mdiViewGrid, mdiWebcam } from '@mdi/js'
-import WebcamMixin from '@/components/mixins/webcam'
+import { Mixins } from 'vue-property-decorator'
+import BaseMixin from '@/components/mixins/base'
+import { mdiWebcam, mdiMenuDown } from '@mdi/js'
 
 @Component({
-    components: {
-        Panel,
-    },
+    name: 'WebcamPanel',
 })
-export default class WebcamPanel extends Mixins(BaseMixin, WebcamMixin) {
-    @Prop({ default: 'dashboard' }) declare currentPage?: string
-
+export default class WebcamPanel extends Mixins(BaseMixin) {
     mdiWebcam = mdiWebcam
     mdiMenuDown = mdiMenuDown
-    mdiViewGrid = mdiViewGrid
-
-    get webcams(): GuiWebcamStateWebcam[] {
-        return this.$store.getters['gui/webcams/getWebcams']
-    }
-
-    get showSwitch() {
-        return this.webcams.length > 1
-    }
-
-    // id changed to name with the refactoring of using moonraker webcam API
-    get currentCamId(): string {
-        if (this.webcams.length === 1) return this.webcams[0].name ?? 'all'
-
-        let currentCamId = this.$store.state.gui.view.webcam.currentCam[this.currentPage ?? ''] ?? 'all'
-        if (this.webcams.findIndex((webcam: GuiWebcamStateWebcam) => webcam.name === currentCamId) !== -1)
-            return currentCamId
-        else if (currentCamId !== undefined && this.webcams.length === 1) return this.webcams[0].name ?? ''
-        else return 'all'
-    }
-
-    set currentCamId(newVal: string) {
-        this.$store.dispatch('gui/setCurrentWebcam', { page: this.currentPage, value: newVal })
-    }
-
-    get currentCam(): any {
-        const cam = this.webcams.find((cam: GuiWebcamStateWebcam) => cam.name === this.currentCamId)
-
-        return (
-            cam ?? {
-                name: this.$t('Panels.WebcamPanel.All'),
-                service: 'grid',
-                icon: mdiViewGrid,
-            }
-        )
-    }
 }
 </script>
+
+<style scoped>
+.figma-panel {
+    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-height: 300px;
+}
+
+.figma-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    height: 44px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-container {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-container {
+    flex: 1;
+}
+
+.panel-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.header-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.panel-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.13) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.panel-content {
+    padding: 16px;
+    background: linear-gradient(135deg, #101828 0%, #000000 50%, #101828 100%);
+    border-radius: 0 0 10px 10px;
+    position: relative;
+    height: calc(100% - 45px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(33, 150, 243, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+.webcam-content {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.no-webcam {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.no-webcam-icon {
+    margin-bottom: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .panel-header {
+        padding: 12px 16px;
+    }
+
+    .panel-title {
+        font-size: 14px;
+    }
+
+    .panel-content {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .figma-panel {
+        border-radius: 10px;
+    }
+
+    .panel-header {
+        padding: 10px 12px;
+    }
+
+    .icon-container {
+        width: 24px;
+        height: 24px;
+    }
+
+    .panel-title {
+        font-size: 13px;
+    }
+}
+</style>

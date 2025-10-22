@@ -1,469 +1,383 @@
 <template>
-    <div>
-        <min-settings-panel />
-        <klippy-state-panel />
-        <panel
-            v-if="klipperReadyForGui"
-            :icon="mdiInformation"
-            :title="printerStateOutput"
-            :collapsible="true"
-            card-class="status-panel">
-            <template #icon>
-                <v-progress-circular
-                    v-if="['paused', 'printing'].includes(printer_state)"
-                    :rotate="-90"
-                    :size="30"
-                    :width="5"
-                    :value="printPercent"
-                    color="primary"
-                    class="mr-3" />
-            </template>
-            <template #buttons>
-                <v-btn
-                    v-for="button in filteredToolbarButtons"
-                    :key="button.loadingName"
-                    :color="button.color"
-                    :loading="loadings.includes(button.loadingName)"
-                    icon
-                    tile
-                    @click="button.click">
-                    <v-tooltip top>
-                        <template #activator="{ on, attrs }">
-                            <v-icon v-bind="attrs" v-on="on">{{ button.icon }}</v-icon>
-                        </template>
-                        <span>{{ button.text }}</span>
-                    </v-tooltip>
+    <div class="figma-panel status-panel">
+        <!-- Panel Header -->
+        <div class="panel-header">
+            <div class="header-left">
+                <div class="status-indicator">
+                    <div class="status-dot" :class="getStatusClass()"></div>
+                </div>
+                <div class="title-container">
+                    <h3 class="panel-title">Status</h3>
+                </div>
+            </div>
+            <div class="header-right">
+                <v-btn icon small class="header-button">
+                    <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
                 </v-btn>
-                <v-menu v-if="multiFunctionButton" left offset-y :close-on-content-click="false" class="pa-0">
-                    <template #activator="{ on, attrs }">
-                        <v-btn icon tile v-bind="attrs" v-on="on">
-                            <v-icon>{{ mdiDotsVertical }}</v-icon>
-                        </v-btn>
-                    </template>
-                    <v-list dense>
-                        <v-list-item
-                            v-for="(entry, index) in multiFunctionMenuButtonsFiltered"
-                            :key="'multiFunction_' + index">
-                            <v-btn small style="width: 100%" @click="entry.click()">
-                                <v-icon left small>{{ entry.icon }}</v-icon>
-                                {{ entry.text }}
-                            </v-btn>
-                        </v-list-item>
-                    </v-list>
-                </v-menu>
-            </template>
-            <status-panel-printstatus-thumbnail />
-            <status-panel-exclude-object :show-dialog.sync="boolShowObjects" @update:showDialog="updateShowDialog" />
-            <status-panel-pause-at-layer-dialog :show-dialog.sync="boolShowPauseAtLayer" />
-            <template v-if="print_stats_message">
-                <v-container>
-                    <v-row>
-                        <v-col class="py-2">
-                            <span class="subtitle-2 px-0 text--disabled">
-                                <v-icon class="mr-2 mt-1 float-left" color="warning" small>
-                                    {{ mdiAlertOutline }}
-                                </v-icon>
-                                {{ print_stats_message }}
-                            </span>
-                        </v-col>
-                    </v-row>
-                </v-container>
-                <v-divider class="mt-0 mb-0" />
-            </template>
-            <template v-if="display_message">
-                <v-container>
-                    <v-row class="flex-nowrap">
-                        <v-col class="py-2" style="min-width: 0">
-                            <span class="subtitle-2 px-0 text--disabled">
-                                <v-icon class="mr-2 mt-1 float-left" small>{{ mdiMessageProcessingOutline }}</v-icon>
-                                {{ display_message }}
-                            </span>
-                        </v-col>
-                        <v-col class="col-auto py-2">
-                            <v-icon class="text--disabled cursor-pointer" small @click="clearDisplayMessage">
-                                {{ mdiCloseCircle }}
-                            </v-icon>
-                        </v-col>
-                    </v-row>
-                </v-container>
-                <v-divider class="mt-0 mb-0" />
-            </template>
-            <v-tabs v-model="activeTab" fixed-tabs>
-                <v-tab v-if="current_filename" href="#status">
-                    <v-icon>{{ mdiSpeedometer }}</v-icon>
-                </v-tab>
-                <v-tab v-if="displayFilesTab" href="#files">
-                    <v-icon>{{ mdiFileDocumentMultipleOutline }}</v-icon>
-                </v-tab>
-                <v-tab v-if="displayHistoryTab" href="#history">
-                    <v-icon>{{ mdiHistory }}</v-icon>
-                </v-tab>
-                <v-tab href="#jobqueue">
-                    <v-badge :color="jobQueueBadgeColor" :content="jobsCount.toString()" :inline="true">
-                        <v-icon color="disabled">{{ mdiTrayFull }}</v-icon>
-                    </v-badge>
-                </v-tab>
-            </v-tabs>
-            <v-divider class="my-0" />
-            <v-tabs-items v-model="activeTab" class="_border-radius">
-                <v-tab-item v-if="current_filename" value="status">
-                    <status-panel-printstatus />
-                </v-tab-item>
-                <v-tab-item v-if="displayFilesTab" value="files">
-                    <status-panel-gcodefiles />
-                </v-tab-item>
-                <v-tab-item v-if="displayHistoryTab" value="history">
-                    <status-panel-history />
-                </v-tab-item>
-                <v-tab-item value="jobqueue">
-                    <status-panel-jobqueue />
-                </v-tab-item>
-            </v-tabs-items>
-        </panel>
-        <cancel-job-dialog
-            :show-dialog="showCancelJobDialog"
-            @cancel-job="cancelJob"
-            @close="showCancelJobDialog = false" />
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="panel-divider"></div>
+
+        <!-- Panel Content -->
+        <div class="panel-content">
+            <!-- Method Progress -->
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Method</span>
+                    <span class="progress-percentage">{{ methodProgress }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" :style="{ width: methodProgress + '%' }"></div>
+                </div>
+            </div>
+
+            <!-- Sequence Progress -->
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Sequence</span>
+                    <span class="progress-percentage">{{ sequenceProgress }}%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" :style="{ width: sequenceProgress + '%' }"></div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <div class="action-button pause-button">
+                    <span class="button-label">Pause</span>
+                    <v-btn icon class="button-icon">
+                        <v-icon size="16">{{ mdiPause }}</v-icon>
+                    </v-btn>
+                </div>
+                <div class="action-button stop-button">
+                    <span class="button-label">Stop</span>
+                    <v-btn icon class="button-icon">
+                        <v-icon size="16">{{ mdiStop }}</v-icon>
+                    </v-btn>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import { Mixins, Watch } from 'vue-property-decorator'
+import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
-import MinSettingsPanel from '@/components/panels/MinSettingsPanel.vue'
-import KlippyStatePanel from '@/components/panels/KlippyStatePanel.vue'
-import StatusPanelPrintstatus from '@/components/panels/Status/Printstatus.vue'
-import StatusPanelGcodefiles from '@/components/panels/Status/Gcodefiles.vue'
-import StatusPanelHistory from '@/components/panels/Status/History.vue'
-import StatusPanelJobqueue from '@/components/panels/Status/Jobqueue.vue'
-import StatusPanelExcludeObject from '@/components/panels/Status/ExcludeObject.vue'
-import StatusPanelPrintstatusThumbnail from '@/components/panels/Status/PrintstatusThumbnail.vue'
-import StatusPanelPauseAtLayerDialog from '@/components/panels/Status/PauseAtLayerDialog.vue'
-import Panel from '@/components/ui/Panel.vue'
-import {
-    mdiAlertOutline,
-    mdiBroom,
-    mdiCloseCircle,
-    mdiDotsVertical,
-    mdiFileDocumentMultipleOutline,
-    mdiHistory,
-    mdiInformation,
-    mdiLayersPlus,
-    mdiMessageProcessingOutline,
-    mdiPause,
-    mdiPlay,
-    mdiPrinter,
-    mdiSelectionRemove,
-    mdiSpeedometer,
-    mdiStop,
-    mdiTrayFull,
-} from '@mdi/js'
-import { PrinterStateMacro } from '@/store/printer/types'
-import CancelJobDialog from '@/components/dialogs/CancelJobDialog.vue'
+import { mdiDotsVertical, mdiPause, mdiStop } from '@mdi/js'
 
 @Component({
-    components: {
-        CancelJobDialog,
-        KlippyStatePanel,
-        MinSettingsPanel,
-        Panel,
-        StatusPanelExcludeObject,
-        StatusPanelGcodefiles,
-        StatusPanelHistory,
-        StatusPanelJobqueue,
-        StatusPanelPrintstatus,
-        StatusPanelPrintstatusThumbnail,
-        StatusPanelPauseAtLayerDialog,
-    },
+    name: 'StatusPanel',
 })
 export default class StatusPanel extends Mixins(BaseMixin) {
-    mdiAlertOutline = mdiAlertOutline
-    mdiCloseCircle = mdiCloseCircle
     mdiDotsVertical = mdiDotsVertical
-    mdiFileDocumentMultipleOutline = mdiFileDocumentMultipleOutline
-    mdiInformation = mdiInformation
-    mdiHistory = mdiHistory
-    mdiMessageProcessingOutline = mdiMessageProcessingOutline
-    mdiSpeedometer = mdiSpeedometer
-    mdiTrayFull = mdiTrayFull
+    mdiPause = mdiPause
+    mdiStop = mdiStop
 
-    declare $refs: {
-        bigThumbnail: any
+    get methodProgress() {
+        // Mock data - 실제로는 store에서 가져와야 함
+        return 0
     }
 
-    showCancelJobDialog = false
-    boolShowObjects = false
-    boolShowPauseAtLayer = false
-
-    activeTab = 'files'
-    lastFilename = ''
-
-    get jobs() {
-        return this.$store.getters['server/jobQueue/getJobs']
+    get sequenceProgress() {
+        // Mock data - 실제로는 store에서 가져와야 함
+        return 0
     }
 
-    get jobsCount() {
-        return this.$store.getters['server/jobQueue/getJobsCount']
-    }
-
-    get jobQueueBadgeColor() {
-        return this.jobsCount > 0 ? 'primary darken-2' : 'grey darken-2'
-    }
-
-    get current_filename() {
-        return this.$store.state.printer.print_stats?.filename ?? ''
-    }
-
-    get current_file() {
-        return this.$store.state.printer.current_file ?? {}
-    }
-
-    get printPercent() {
-        return Math.floor(this.$store.getters['printer/getPrintPercent'] * 100)
-    }
-
-    get printerStateOutput() {
-        if (this.printer_state !== '') {
-            const idle_timeout_state = this.$store.state.printer.idle_timeout?.state
-
-            if (this.printer_state === 'standby' && idle_timeout_state === 'Printing') return 'Busy'
-
-            if (this.printer_state !== '' && ['paused', 'printing'].includes(this.printer_state)) {
-                return (
-                    this.printPercent + '% ' + this.printer_state.charAt(0).toUpperCase() + this.printer_state.slice(1)
-                )
-            }
-
-            return this.printer_state.charAt(0).toUpperCase() + this.printer_state.slice(1)
+    getStatusClass() {
+        switch (this.printer_state) {
+            case 'ready':
+                return 'ready'
+            case 'printing':
+                return 'printing'
+            case 'paused':
+                return 'paused'
+            case 'error':
+                return 'error'
+            default:
+                return 'ready'
         }
-
-        return this.$t('Panels.StatusPanel.Unknown')
-    }
-
-    get toolbarButtons() {
-        return [
-            {
-                text: this.$t('Panels.StatusPanel.PausePrint'),
-                color: 'warning',
-                icon: mdiPause,
-                loadingName: 'statusPrintPause',
-                status: () => ['printing'].includes(this.printer_state),
-                click: this.btnPauseJob,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.ResumePrint'),
-                color: 'success',
-                icon: mdiPlay,
-                loadingName: 'statusPrintResume',
-                status: () => ['paused'].includes(this.printer_state),
-                click: this.btnResumeJob,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.CancelPrint'),
-                color: 'error',
-                icon: mdiStop,
-                loadingName: 'statusPrintCancel',
-                status: () => {
-                    if (this.$store.state.gui.uiSettings.displayCancelPrint)
-                        return ['paused', 'printing'].includes(this.printer_state)
-
-                    return ['paused'].includes(this.printer_state)
-                },
-                click: this.btnCancelJob,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.ExcludeObject.ExcludeObject'),
-                color: 'warning',
-                icon: mdiSelectionRemove,
-                loadingName: 'excludeObjectButton',
-                status: () => {
-                    if (this.multiFunctionButton || this.printing_objects.length < 2) return false
-
-                    return ['paused', 'printing'].includes(this.printer_state)
-                },
-                click: this.btnExcludeObject,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.PauseAtLayer.PauseAtLayer'),
-                color: 'warning',
-                icon: mdiLayersPlus,
-                loadingName: 'pauseAtLayer',
-                status: () => {
-                    if (this.multiFunctionButton || !this.displayPauseAtLayerButton) return false
-
-                    return ['paused', 'printing'].includes(this.printer_state)
-                },
-                click: this.btnPauseAtLayer,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.ClearPrintStats'),
-                color: 'primary',
-                icon: mdiBroom,
-                loadingName: 'statusPrintClear',
-                status: () => ['error', 'complete', 'cancelled'].includes(this.printer_state),
-                click: this.btnClearJob,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.ReprintJob'),
-                color: 'primary',
-                icon: mdiPrinter,
-                loadingName: 'statusPrintReprint',
-                status: () => ['error', 'complete', 'cancelled'].includes(this.printer_state),
-                click: this.btnReprintJob,
-            },
-        ]
-    }
-
-    get filteredToolbarButtons() {
-        return this.toolbarButtons.filter((button) => button.status())
-    }
-
-    get printing_objects() {
-        return this.$store.state.printer.exclude_object?.objects ?? []
-    }
-
-    get display_message() {
-        return this.$store.state.printer.display_status?.message ?? null
-    }
-
-    get print_stats_message() {
-        return this.$store.state.printer.print_stats?.message ?? null
-    }
-
-    get layer_count() {
-        return this.$store.state.printer.print_stats?.info?.total_layer ?? null
-    }
-
-    get multiFunctionMenuButtons() {
-        return [
-            {
-                text: this.$t('Panels.StatusPanel.ExcludeObject.ExcludeObject'),
-                loadingName: 'excludeObjectButton',
-                icon: mdiSelectionRemove,
-                status: () => this.printing_objects.length > 1,
-                disabled: () => ['paused', 'printing'].includes(this.printer_state),
-                click: this.btnExcludeObject,
-            },
-            {
-                text: this.$t('Panels.StatusPanel.PauseAtLayer.PauseAtLayer'),
-                loadingName: 'pauseAtLayer',
-                icon: mdiLayersPlus,
-                status: () => this.displayPauseAtLayerButton,
-                disabled: () => ['paused', 'printing'].includes(this.printer_state),
-                click: this.btnPauseAtLayer,
-            },
-        ]
-    }
-
-    get multiFunctionMenuButtonsFiltered() {
-        return this.multiFunctionMenuButtons.filter((button) => button.status())
-    }
-
-    get multiFunctionButton() {
-        if (!['paused', 'printing'].includes(this.printer_state)) return false
-
-        return this.multiFunctionMenuButtonsFiltered.length > 1
-    }
-
-    get macros() {
-        return this.$store.getters['printer/getMacros'] ?? []
-    }
-
-    get existsSetPauseAtLayer() {
-        return this.macros.findIndex((macro: PrinterStateMacro) => macro.name === 'SET_PAUSE_AT_LAYER') !== -1
-    }
-
-    get existsSetPauseNextLayer() {
-        return this.macros.findIndex((macro: PrinterStateMacro) => macro.name === 'SET_PAUSE_NEXT_LAYER') !== -1
-    }
-
-    get displayPauseAtLayerButton() {
-        return this.layer_count !== null && (this.existsSetPauseAtLayer || this.existsSetPauseNextLayer)
-    }
-
-    get displayFilesTab() {
-        const count = this.$store.state.gui.uiSettings.dashboardFilesLimit ?? 5
-
-        return count > 0
-    }
-
-    get displayHistoryTab() {
-        const count = this.$store.state.gui.uiSettings.dashboardHistoryLimit ?? 5
-
-        return count > 0
-    }
-
-    mounted() {
-        if (this.current_filename !== '') this.activeTab = 'status'
-        if (!this.displayFilesTab) this.activeTab = 'history'
-        if (!this.displayHistoryTab) this.activeTab = 'jobqueue'
-    }
-
-    @Watch('current_filename')
-    current_filenameChanged(newVal: string) {
-        if (newVal === '') this.activeTab = 'files'
-        else if (this.lastFilename !== newVal) this.activeTab = 'status'
-
-        this.lastFilename = newVal
-    }
-
-    clearDisplayMessage() {
-        this.$socket.emit('printer.gcode.script', { script: 'M117' })
-    }
-
-    updateShowDialog(newVal: boolean) {
-        this.boolShowObjects = newVal
-    }
-
-    btnPauseJob() {
-        this.$socket.emit('printer.print.pause', {}, { loading: 'statusPrintPause' })
-    }
-
-    btnResumeJob() {
-        this.$socket.emit('printer.print.resume', {}, { loading: 'statusPrintResume' })
-    }
-
-    btnExcludeObject() {
-        this.boolShowObjects = true
-    }
-
-    btnPauseAtLayer() {
-        this.boolShowPauseAtLayer = true
-    }
-
-    btnCancelJob() {
-        const confirmOnCancelJob = this.$store.state.gui.uiSettings.confirmOnCancelJob
-        if (confirmOnCancelJob) {
-            this.showCancelJobDialog = true
-            return
-        }
-
-        this.cancelJob()
-    }
-
-    cancelJob() {
-        this.showCancelJobDialog = false
-        this.$socket.emit('printer.print.cancel', {}, { loading: 'statusPrintCancel' })
-    }
-
-    btnClearJob() {
-        this.$socket.emit('printer.gcode.script', { script: 'SDCARD_RESET_FILE' }, { loading: 'statusPrintClear' })
-    }
-
-    btnReprintJob() {
-        this.$socket.emit('printer.print.start', { filename: this.current_filename }, { loading: 'statusPrintReprint' })
     }
 }
 </script>
 
 <style scoped>
-._border-radius {
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
+.figma-panel {
+    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-height: 300px;
 }
 
-.theme--dark.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-badge > .v-icon {
+.figma-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    height: 44px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.status-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #00c950;
+}
+
+.status-dot.ready {
+    background-color: #00c950;
+}
+
+.status-dot.printing {
+    background-color: #2196f3;
+}
+
+.status-dot.paused {
+    background-color: #ff9800;
+}
+
+.status-dot.error {
+    background-color: #f44336;
+}
+
+.title-container {
+    flex: 1;
+}
+
+.panel-title {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+}
+
+.header-button {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.header-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.panel-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.13) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+}
+
+.panel-content {
+    padding: 16px;
+    background: linear-gradient(135deg, #101828 0%, #000000 50%, #101828 100%);
+    border-radius: 0 0 10px 10px;
+    position: relative;
+    height: calc(100% - 45px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(33, 150, 243, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+    pointer-events: none;
+}
+
+.progress-item {
+    position: relative;
+    z-index: 1;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-label {
     color: rgba(255, 255, 255, 0.6);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.progress-percentage {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 16px;
+    background: #ececf0;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2196f3 0%, #00bcd4 100%);
+    border-radius: 8px;
+    transition: width 0.3s ease;
+}
+
+.action-buttons {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.action-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.button-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.button-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.button-icon:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.pause-button:hover {
+    background: rgba(255, 152, 0, 0.1);
+    border-color: rgba(255, 152, 0, 0.2);
+}
+
+.stop-button:hover {
+    background: rgba(244, 67, 54, 0.1);
+    border-color: rgba(244, 67, 54, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .panel-header {
+        padding: 12px 16px;
+    }
+
+    .panel-title {
+        font-size: 14px;
+    }
+
+    .panel-content {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .action-button {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .figma-panel {
+        border-radius: 10px;
+    }
+
+    .panel-header {
+        padding: 10px 12px;
+    }
+
+    .status-indicator {
+        width: 18px;
+        height: 18px;
+    }
+
+    .status-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .panel-title {
+        font-size: 13px;
+    }
+
+    .progress-label,
+    .progress-percentage {
+        font-size: 13px;
+    }
+
+    .button-label {
+        font-size: 13px;
+    }
 }
 </style>

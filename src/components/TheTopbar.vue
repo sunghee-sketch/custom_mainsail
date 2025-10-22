@@ -1,65 +1,73 @@
 <template>
     <div>
-        <v-app-bar app elevate-on-scroll :height="topbarHeight" class="topbar pa-0" clipped-left>
-            <v-app-bar-nav-icon tile @click.stop="naviDrawer = !naviDrawer" />
-            <router-link to="/">
-                <!-- 기존 로고 렌더링 로직 주석 처리 -->
-                <!-- <inline-svg v-if="sidebarLogo && isSvgLogo" :src="sidebarLogo" :class="logoClasses" /> -->
-                <!-- <img v-else-if="sidebarLogo" :src="sidebarLogo" :class="logoClasses" alt="Logo" /> -->
-                <!-- <mainsail-logo v-else :color="logoColor" :class="logoClasses" router to="/" :ripple="false" /> -->
+        <v-app-bar 
+            app 
+            elevate-on-scroll 
+            :height="56" 
+            class="automation-topbar pa-0" 
+            clipped-left
+            :elevation="0"
+            color="transparent"
+        >
+            <!-- LEFT SIDE: Logo and Title -->
+            <div class="d-flex align-center">
+                <!-- Logo Container -->
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <span class="logo-text">A</span>
+                    </div>
+                </div>
+                
+                <!-- Title -->
+                <div class="title-container">
+                    <h1 class="title-text">Automation System</h1>
+                </div>
+            </div>
 
-                <!-- 새 로고(alhs-logo.svg) 적용 (파일 위치: public/img/alhs-logo.svg) -->
-                <img src="/img/alhs-logo.svg" :class="logoClasses" alt="Logo" />
-            </router-link>
-            <v-toolbar-title class="text-no-wrap ml-0 pl-2 mr-2">{{ printerName }}</v-toolbar-title>
-            <printer-selector v-if="countPrinters" />
             <v-spacer />
-            <input
-                ref="fileUploadAndStart"
-                type="file"
-                :accept="gcodeInputFileAccept.join(', ')"
-                style="display: none"
-                @change="uploadAndStart" />
-            <v-btn
-                v-if="showSaveConfigButton"
-                tile
-                :icon="$vuetify.breakpoint.smAndDown"
-                :text="$vuetify.breakpoint.mdAndUp"
-                color="primary"
-                class="button-min-width-auto px-3 d-none d-sm-flex save-config-button"
-                :disabled="printerIsPrinting"
-                :loading="loadings.includes('topbarSaveConfig')"
-                @click="saveConfig">
-                <v-icon class="d-md-none">{{ mdiContentSave }}</v-icon>
-                <span class="d-none d-md-inline">{{ $t('App.TopBar.SAVE_CONFIG') }}</span>
-            </v-btn>
-            <v-btn
-                v-if="boolShowUploadAndPrint"
-                tile
-                :icon="$vuetify.breakpoint.smAndDown"
-                :text="$vuetify.breakpoint.mdAndUp"
-                color="primary"
-                class="button-min-width-auto px-3 d-none d-sm-flex upload-and-start-button"
-                :loading="loadings.includes('btnUploadAndStart')"
-                @click="btnUploadAndStart">
-                <v-icon class="mr-md-2">{{ mdiFileUpload }}</v-icon>
-                <span class="d-none d-md-inline">{{ $t('App.TopBar.UploadPrint') }}</span>
-            </v-btn>
-            <v-btn
-                v-if="klippyIsConnected"
-                tile
-                :icon="$vuetify.breakpoint.smAndDown"
-                :text="$vuetify.breakpoint.mdAndUp"
-                color="error"
-                class="button-min-width-auto px-3 emergency-button"
-                :loading="loadings.includes('topbarEmergencyStop')"
-                @click="btnEmergencyStop">
-                <v-icon class="mr-md-2">{{ mdiAlertOctagonOutline }}</v-icon>
-                <span class="d-none d-md-inline">{{ $t('App.TopBar.EmergencyStop') }}</span>
-            </v-btn>
-            <the-notification-menu />
-            <the-settings-menu />
-            <the-top-corner-menu />
+
+            <!-- RIGHT SIDE: Action Buttons -->
+            <div class="d-flex align-center">
+                <!-- Hidden file input -->
+                <input
+                    ref="fileUploadAndStart"
+                    type="file"
+                    :accept="gcodeInputFileAccept.join(', ')"
+                    style="display: none"
+                    @change="uploadAndStart" />
+
+                <!-- Upload & Print Button -->
+                <v-btn
+                    v-if="boolShowUploadAndPrint"
+                    class="action-button upload-button"
+                    :elevation="0"
+                    :loading="loadings.includes('btnUploadAndStart')"
+                    @click="btnUploadAndStart"
+                >
+                    <v-icon left size="16" class="mr-2">{{ mdiFileUpload }}</v-icon>
+                    Upload & Print
+                </v-btn>
+
+                <!-- Emergency Stop Button -->
+                <v-btn
+                    v-if="klippyIsConnected"
+                    class="action-button emergency-button"
+                    :elevation="0"
+                    :loading="loadings.includes('topbarEmergencyStop')"
+                    @click="btnEmergencyStop"
+                >
+                    <v-icon left size="16" class="mr-2">{{ mdiAlertOctagonOutline }}</v-icon>
+                    Emergency Stop
+                </v-btn>
+
+                <!-- Divider -->
+                <v-divider vertical class="mx-2" style="height: 16px; opacity: 0.1;"></v-divider>
+
+                <!-- Icon Buttons -->
+                <the-settings-menu />
+                <the-notification-menu />
+                <the-top-corner-menu />
+            </div>
         </v-app-bar>
         <v-snackbar v-model="uploadSnackbar.status" :timeout="-1" fixed right bottom>
             <strong>{{ $t('App.TopBar.Uploading') }} {{ uploadSnackbar.filename }}</strong>
@@ -124,7 +132,7 @@ export default class TheTopbar extends Mixins(BaseMixin, ThemeMixin) {
     mdiClose = mdiClose
     mdiCloseThick = mdiCloseThick
 
-    topbarHeight = topbarHeight
+    topbarHeight = 56
 
     showEmergencyStopDialog = false
 
@@ -324,32 +332,118 @@ export default class TheTopbar extends Mixins(BaseMixin, ThemeMixin) {
 
 <style scoped>
 /*noinspection CssUnusedSymbol*/
-::v-deep .topbar .v-toolbar__content {
+::v-deep .automation-topbar .v-toolbar__content {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.automation-topbar {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.logo-container {
+    margin-right: 12px;
+}
+
+.logo-icon {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(180deg, #2196f3 0%, #1976d2 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-text {
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.title-container {
+    margin-left: 12px;
+}
+
+.title-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+}
+
+.action-button {
+    height: 32px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-transform: none;
+    margin-right: 8px;
+}
+
+.upload-button {
+    background-color: rgba(33, 150, 243, 0.1) !important;
+    color: #2196f3 !important;
+}
+
+.emergency-button {
+    background-color: rgba(255, 82, 82, 0.1) !important;
+    color: #ff5252 !important;
 }
 
 .button-min-width-auto {
     min-width: auto !important;
 }
+
 /*noinspection CssUnusedSymbol*/
-.topbar .v-btn {
+.automation-topbar .v-btn {
     height: 100% !important;
     max-height: none;
 }
-::v-deep .topbar .nav-logo {
-    width: auto;
-    height: 32px;
-}
+
 /*noinspection CssUnusedSymbol*/
-.topbar .v-btn.v-btn--icon {
-    /*noinspection CssUnresolvedCustomProperty*/
-    width: var(--topbar-icon-btn-width) !important;
+.automation-topbar .v-btn.v-btn--icon {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 10px;
+    margin-left: 8px;
+    color: rgba(255, 255, 255, 0.7) !important;
 }
+
+.automation-topbar .v-btn.v-btn--icon:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
 /*noinspection CssUnusedSymbol*/
 @media (min-width: 768px) {
-    header.topbar {
+    header.automation-topbar {
         z-index: 8 !important;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .title-text {
+        font-size: 14px;
+    }
+    
+    .action-button {
+        font-size: 12px;
+        height: 28px;
+    }
+    
+    .automation-topbar .v-btn.v-btn--icon {
+        width: 28px !important;
+        height: 28px !important;
     }
 }
 </style>
