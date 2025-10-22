@@ -4,7 +4,7 @@
         <div class="panel-header">
             <div class="header-left">
                 <div class="icon-container">
-                    <i class="nav-icon mdi mdi-file-document-outline"></i>
+                    <v-icon small>{{ icons.mdiFile }}</v-icon>
                 </div>
                 <div class="title-container">
                     <h3 class="panel-title">File</h3>
@@ -12,7 +12,7 @@
             </div>
             <div class="header-right">
                 <button class="header-button">
-                    <i class="mdi mdi-dots-vertical"></i>
+                    <v-icon>{{ icons.mdiDotsVertical }}</v-icon>
                 </button>
             </div>
         </div>
@@ -36,11 +36,10 @@
                     :style="{ paddingLeft: item.level * 20 + 16 + 'px' }"
                     v-show="item.visible">
                     <div class="item-content" @click="toggleItem(item)">
-                        <i
-                            v-if="item.isFolder"
-                            class="mdi expand-icon"
-                            :class="item.expanded ? 'mdi-chevron-down' : 'mdi-chevron-right'"></i>
-                        <i v-else class="mdi file-icon" :class="getFileIcon(item.name)"></i>
+                        <v-icon v-if="item.isFolder" class="expand-icon" small>
+                            {{ item.expanded ? icons.mdiChevronDown : icons.mdiChevronRight }}
+                        </v-icon>
+                        <v-icon v-else class="file-icon" small>{{ getFileIcon(item.name) }}</v-icon>
                         <span class="item-name">{{ item.name }}</span>
                     </div>
                 </div>
@@ -50,10 +49,31 @@
 </template>
 
 <script>
+import {
+    mdiFile,
+    mdiDotsVertical,
+    mdiChevronDown,
+    mdiChevronRight,
+    mdiFileCode,
+    mdiFileDocument,
+    mdiCodeJson,
+    mdiFile as mdiFileGeneric,
+} from '@mdi/js'
+
 export default {
     name: 'FilePanel',
     data() {
         return {
+            icons: {
+                mdiFile,
+                mdiDotsVertical,
+                mdiChevronDown,
+                mdiChevronRight,
+                mdiFileCode,
+                mdiFileDocument,
+                mdiCodeJson,
+                mdiFile: mdiFileGeneric,
+            },
             fileTree: [
                 {
                     id: 1,
@@ -129,16 +149,16 @@ export default {
             const extension = filename.split('.').pop().toLowerCase()
             switch (extension) {
                 case 'gcode':
-                    return 'mdi-file-code'
+                    return this.icons.mdiFileCode
                 case 'txt':
-                    return 'mdi-file-document'
+                    return this.icons.mdiFileDocument
                 case 'json':
-                    return 'mdi-code-json'
+                    return this.icons.mdiCodeJson
                 case 'yaml':
                 case 'yml':
-                    return 'mdi-file-document-outline'
+                    return this.icons.mdiFileDocument
                 default:
-                    return 'mdi-file'
+                    return this.icons.mdiFile
             }
         },
     },
