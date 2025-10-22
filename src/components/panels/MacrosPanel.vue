@@ -1,11 +1,22 @@
 <template>
-    <panel
-        v-if="klipperReadyForGui && macros.length > 0"
-        :icon="mdiCodeTags"
-        :title="$t('Panels.MacrosPanel.Headline')"
-        :collapsible="true"
-        card-class="macros-panel">
-        <v-card-text class="py-2">
+    <div v-if="klipperReadyForGui && macros.length > 0" class="figma-panel macros-panel">
+        <!-- Panel Header -->
+        <div class="panel-header">
+            <div class="header-left">
+                <div class="icon-container">
+                    <v-icon class="nav-icon">{{ mdiCodeTags }}</v-icon>
+                </div>
+                <div class="title-container">
+                    <h3 class="panel-title">Macros</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="panel-divider"></div>
+
+        <!-- Panel Content -->
+        <div class="panel-content">
             <v-row>
                 <v-col class="text-center">
                     <macro-button
@@ -16,8 +27,8 @@
                         class="mx-1 my-1" />
                 </v-col>
             </v-row>
-        </v-card-text>
-    </panel>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -44,3 +55,12 @@ export default class MacrosPanel extends Mixins(BaseMixin) {
     }
 }
 </script>
+
+<style scoped>
+/* 공통 스타일은 panel-common.css에서 관리 */
+
+.figma-panel {
+    width: 100%;
+    height: 100%;
+}
+</style>

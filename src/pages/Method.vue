@@ -7,21 +7,26 @@
 
         <div class="method-content">
             <v-card class="method-card">
-                <v-card-title>Method Settings</v-card-title>
+                <v-card-title>Method List Panel</v-card-title>
                 <v-card-text>
-                    <p>Method configuration features will be implemented here.</p>
+                    <method-list-panel></method-list-panel>
                 </v-card-text>
             </v-card>
         </div>
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import MethodListPanel from '@/components/panels/MethodListPanel.vue'
 
-@Component({})
+@Component({
+    components: {
+        MethodListPanel,
+    },
+})
 export default class Method extends Mixins(BaseMixin) {
     // Method management logic will be implemented here
 }

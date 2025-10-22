@@ -1,5 +1,6 @@
 import 'regenerator-runtime' // async polyfill used by the gcodeviewer
 import 'resize-observer-polyfill' // polyfill needed by the responsive class detection
+import '@/assets/styles/panel-common.css' // 공통 패널 스타일
 import Vue from 'vue'
 import App from '@/App.vue'
 import vuetify from '@/plugins/vuetify'

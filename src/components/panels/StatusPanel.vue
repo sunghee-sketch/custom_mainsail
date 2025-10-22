@@ -50,13 +50,13 @@
                     <span class="button-label">Pause</span>
                     <v-btn icon class="button-icon">
                         <v-icon size="16">{{ mdiPause }}</v-icon>
-                        </v-btn>
+                    </v-btn>
                 </div>
                 <div class="action-button stop-button">
                     <span class="button-label">Stop</span>
                     <v-btn icon class="button-icon">
                         <v-icon size="16">{{ mdiStop }}</v-icon>
-                            </v-btn>
+                    </v-btn>
                 </div>
             </div>
         </div>
@@ -105,40 +105,11 @@ export default class StatusPanel extends Mixins(BaseMixin) {
 </script>
 
 <style scoped>
+/* 공통 스타일은 panel-common.css에서 관리 */
+
 .figma-panel {
-    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
-    overflow: hidden;
-    position: relative;
     aspect-ratio: 4 / 3;
     min-height: 300px;
-}
-
-.figma-panel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
-}
-
-.panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    height: 44px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
 }
 
 .status-indicator {
@@ -171,68 +142,6 @@ export default class StatusPanel extends Mixins(BaseMixin) {
 
 .status-dot.error {
     background-color: #f44336;
-}
-
-.title-container {
-    flex: 1;
-}
-
-.panel-title {
-    color: rgba(255, 255, 255, 0.9);
-    font-family: Arial, sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-    margin: 0;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-}
-
-.header-button {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.header-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.panel-divider {
-    height: 1px;
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.13) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
-}
-
-.panel-content {
-    padding: 16px;
-    background: linear-gradient(135deg, #101828 0%, #000000 50%, #101828 100%);
-    border-radius: 0 0 10px 10px;
-    position: relative;
-    height: calc(100% - 45px);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.panel-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(33, 150, 243, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
 }
 
 .progress-item {
