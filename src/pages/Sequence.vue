@@ -1,17 +1,36 @@
 <template>
     <div class="sequence-page">
-        <div class="page-header">
-            <h1 class="page-title">Sequence</h1>
-            <p class="page-subtitle">Sequence management and automation</p>
-        </div>
-
         <div class="sequence-content">
-            <v-card class="sequence-card">
-                <v-card-title>Sequence Management</v-card-title>
-                <v-card-text>
-                    <p>Sequence automation features will be implemented here.</p>
-                </v-card-text>
-            </v-card>
+            <v-row v-if="isMobile">
+                <v-col>
+                    <file-panel class="mb-4"></file-panel>
+                    <sequence-maker-panel class="mb-4"></sequence-maker-panel>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="isTablet">
+                <v-col class="col-6">
+                    <file-panel class="mb-4"></file-panel>
+                </v-col>
+                <v-col class="col-6">
+                    <sequence-maker-panel class="mb-4"></sequence-maker-panel>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="isDesktop">
+                <v-col class="col-6">
+                    <file-panel class="mb-4"></file-panel>
+                </v-col>
+                <v-col class="col-6">
+                    <sequence-maker-panel class="mb-4"></sequence-maker-panel>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="isWidescreen">
+                <v-col class="col-6">
+                    <file-panel class="mb-4"></file-panel>
+                </v-col>
+                <v-col class="col-6">
+                    <sequence-maker-panel class="mb-4"></sequence-maker-panel>
+                </v-col>
+            </v-row>
         </div>
     </div>
 </template>
@@ -20,39 +39,22 @@
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import FilePanel from '@/components/panels/FilePanel.vue'
+import SequenceMakerPanel from '@/components/panels/SequenceMakerPanel.vue'
 
-@Component({})
+@Component({
+    components: {
+        FilePanel,
+        SequenceMakerPanel,
+    },
+})
 export default class Sequence extends Mixins(BaseMixin) {
     // Sequence management logic will be implemented here
 }
 </script>
 <style scoped>
-/* Dashboard와 동일한 스타일 적용 */
-
-.page-header {
-    margin-bottom: 32px;
-}
-
-.page-title {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: 8px;
-}
-
-.page-subtitle {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1rem;
-}
-
 .sequence-content {
     display: grid;
-    gap: 24px;
-}
-
-.sequence-card {
-    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
+    gap: 16px;
 }
 </style>

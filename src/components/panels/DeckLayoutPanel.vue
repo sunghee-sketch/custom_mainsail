@@ -70,7 +70,7 @@ export default class DeckLayoutPanel extends Mixins(BaseMixin) {
 }
 
 .deck-slot {
-    background: rgba(169, 169, 169, 0.8);
+    background: rgba(206, 206, 206, 0.796);
     border: 1px solid rgba(0, 0, 0, 0.8);
     border-radius: 12px;
     display: flex;
@@ -85,16 +85,16 @@ export default class DeckLayoutPanel extends Mixins(BaseMixin) {
 }
 
 .deck-slot:hover {
-    background: rgba(189, 189, 189, 0.95);
+    background: rgba(210, 210, 210, 0.968);
     transform: scale(1.02);
 }
 
 .slot-number {
     color: rgba(0, 0, 0, 0.4);
-    font-family: 'Arial, sans-serif';
+    font-family: 'Roboto', 'Arial', sans-serif;
     font-size: 35px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 700;
     line-height: 43px;
     text-align: center;
     user-select: none;
