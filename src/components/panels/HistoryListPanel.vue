@@ -1,5 +1,5 @@
 <template>
-    <panel :icon="mdiFileDocumentMultipleOutline" :title="$t('History.PrintHistory')" card-class="history-list-panel">
+    <panel :title="$t('History.PrintHistory')" :icon="mdiFileDocumentMultipleOutline" card-class="history-list-panel">
         <v-card-text>
             <v-row>
                 <v-col class="col-4 d-flex align-center">

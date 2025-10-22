@@ -1,65 +1,54 @@
 <template>
-    <div class="figma-panel sequence-list-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon size="16" color="rgba(255,255,255,0.7)">{{ mdiPlaylistPlay }}</v-icon>
+    <panel
+        :title="$t('Panels.SequenceListPanel.SequenceList')"
+        :icon="mdiPlaylistPlay"
+        card-class="sequence-list-panel">
+        <template #buttons>
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
+            </v-btn>
+        </template>
+        <!-- Active Sequence -->
+        <div class="active-sequence">
+            <div class="sequence-header">
+                <div class="sequence-icon">
+                    <v-icon size="16" color="rgba(33, 150, 243, 0.8)">{{ mdiPlay }}</v-icon>
                 </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Sequence list</h3>
+                <div class="sequence-text">
+                    <span class="sequence-name">Tempo... > example_file.gcode</span>
                 </div>
             </div>
-            <div class="header-right">
-                <v-btn icon small class="header-button">
-                    <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
-                </v-btn>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
             </div>
         </div>
 
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Active Sequence -->
-            <div class="active-sequence">
-                <div class="sequence-header">
+        <!-- Sequence List -->
+        <div class="sequence-list">
+            <div class="sequence-item" v-for="(sequence, index) in sequenceList" :key="index">
+                <div class="sequence-content">
                     <div class="sequence-icon">
-                        <v-icon size="16" color="rgba(33, 150, 243, 0.8)">{{ mdiPlay }}</v-icon>
+                        <v-icon size="14" color="rgba(255,255,255,0.5)">{{ mdiFileDocument }}</v-icon>
                     </div>
-                    <div class="sequence-text">
-                        <span class="sequence-name">Tempo... > example_file.gcode</span>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill"></div>
-                </div>
-            </div>
-
-            <!-- Sequence List -->
-            <div class="sequence-list">
-                <div class="sequence-item" v-for="(sequence, index) in sequenceList" :key="index">
-                    <div class="sequence-content">
-                        <div class="sequence-icon">
-                            <v-icon size="14" color="rgba(255,255,255,0.5)">{{ mdiFileDocument }}</v-icon>
-                        </div>
-                        <span class="sequence-name">{{ sequence.name }}</span>
-                    </div>
+                    <span class="sequence-name">{{ sequence.name }}</span>
                 </div>
             </div>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiPlaylistPlay, mdiDotsVertical, mdiPlay, mdiFileDocument } from '@mdi/js'
 
 @Component({
     name: 'SequenceListPanel',
+    components: {
+        Panel,
+    },
 })
 export default class SequenceListPanel extends Mixins(BaseMixin) {
     mdiPlaylistPlay = mdiPlaylistPlay
@@ -80,26 +69,7 @@ export default class SequenceListPanel extends Mixins(BaseMixin) {
 </script>
 
 <style scoped>
-.figma-panel {
-    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
-    overflow: hidden;
-    position: relative;
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
-
-.figma-panel::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0) 100%);
-    pointer-events: none;
-}
+/* SequenceListPanel 전용 스타일 */
 
 .panel-header {
     display: flex;
@@ -311,12 +281,8 @@ export default class SequenceListPanel extends Mixins(BaseMixin) {
 }
 
 @media (max-width: 480px) {
-    .figma-panel {
-        border-radius: 10px;
-    }
-
-    .panel-header {
-        padding: 10px 12px;
+    .active-sequence {
+        padding: 8px 10px;
     }
 
     .icon-container {

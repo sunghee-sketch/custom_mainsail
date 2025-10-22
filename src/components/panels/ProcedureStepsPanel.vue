@@ -1,61 +1,50 @@
 <template>
-    <div class="figma-panel procedure-steps-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon class="nav-icon">{{ mdiPlaylistPlay }}</v-icon>
+    <panel
+        :title="$t('Panels.ProcedureStepsPanel.ProcedureSteps')"
+        :icon="mdiPlaylistPlay"
+        card-class="procedure-steps-panel">
+        <template #buttons>
+            <v-btn small class="add-step-btn">
+                <v-icon left size="16">{{ mdiPlus }}</v-icon>
+                add step
+            </v-btn>
+            <v-btn small class="done-btn">
+                <v-icon left size="16">{{ mdiCheck }}</v-icon>
+                Done
+            </v-btn>
+        </template>
+        <!-- Steps List -->
+        <div class="steps-list">
+            <div
+                v-for="(step, index) in procedureSteps"
+                :key="index"
+                class="step-item"
+                :class="{ active: selectedStep === step.id }"
+                @click="selectStep(step.id)">
+                <div class="step-icon">
+                    <v-icon>{{ step.icon }}</v-icon>
                 </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Procedure steps</h3>
-                </div>
-            </div>
-            <div class="header-right">
-                <v-btn small class="add-step-btn">
-                    <v-icon left size="16">{{ mdiPlus }}</v-icon>
-                    add step
-                </v-btn>
-                <v-btn small class="done-btn">
-                    <v-icon left size="16">{{ mdiCheck }}</v-icon>
-                    Done
-                </v-btn>
-            </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Steps List -->
-            <div class="steps-list">
-                <div
-                    v-for="(step, index) in procedureSteps"
-                    :key="index"
-                    class="step-item"
-                    :class="{ active: selectedStep === step.id }"
-                    @click="selectStep(step.id)">
-                    <div class="step-icon">
-                        <v-icon>{{ step.icon }}</v-icon>
-                    </div>
-                    <div class="step-content">
-                        <span class="step-title">{{ step.title }}</span>
-                        <span class="step-description">{{ step.description }}</span>
-                    </div>
+                <div class="step-content">
+                    <span class="step-title">{{ step.title }}</span>
+                    <span class="step-description">{{ step.description }}</span>
                 </div>
             </div>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiPlaylistPlay, mdiPlus, mdiCheck, mdiPlay, mdiStop } from '@mdi/js'
 
 @Component({
     name: 'ProcedureStepsPanel',
+    components: {
+        Panel,
+    },
 })
 export default class ProcedureStepsPanel extends Mixins(BaseMixin) {
     mdiPlaylistPlay = mdiPlaylistPlay

@@ -1,48 +1,34 @@
 <template>
-    <div class="figma-panel deck-layout-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon class="nav-icon">{{ mdiViewGrid }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Deck Layout</h3>
-                </div>
-            </div>
-            <div class="header-right">
-                <v-btn icon small class="header-button">
-                    <v-icon size="16">{{ mdiRefresh }}</v-icon>
-                </v-btn>
-                <v-btn icon small class="header-button">
-                    <v-icon size="16">{{ mdiSettings }}</v-icon>
-                </v-btn>
+    <panel :title="$t('Panels.DeckLayoutPanel.DeckLayout')" :icon="mdiViewGrid" card-class="deck-layout-panel">
+        <template #buttons>
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiRefresh }}</v-icon>
+            </v-btn>
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiSettings }}</v-icon>
+            </v-btn>
+        </template>
+        <!-- Deck Grid -->
+        <div class="deck-grid">
+            <div v-for="position in deckPositions" :key="position" class="deck-slot">
+                <span class="slot-number">{{ position }}</span>
             </div>
         </div>
-
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Deck Grid -->
-            <div class="deck-grid">
-                <div v-for="position in deckPositions" :key="position" class="deck-slot">
-                    <span class="slot-number">{{ position }}</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiViewGrid, mdiRefresh, mdiCog } from '@mdi/js'
 
 @Component({
     name: 'DeckLayoutPanel',
+    components: {
+        Panel,
+    },
 })
 export default class DeckLayoutPanel extends Mixins(BaseMixin) {
     mdiViewGrid = mdiViewGrid

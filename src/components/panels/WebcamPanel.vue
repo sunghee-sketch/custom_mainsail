@@ -1,45 +1,31 @@
 <template>
-    <div class="figma-panel webcam-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon size="16" color="rgba(255,255,255,0.7)">{{ mdiWebcam }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">WebCam</h3>
-                </div>
+    <panel :title="$t('Panels.WebcamPanel.Webcam')" :icon="mdiWebcam" card-class="webcam-panel">
+        <template #buttons>
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiMenuDown }}</v-icon>
+            </v-btn>
+        </template>
+        <div class="no-webcam">
+            <div class="no-webcam-icon">
+                <v-icon size="56" color="rgba(255,255,255,0.3)">{{ mdiWebcam }}</v-icon>
             </div>
-            <div class="header-right">
-                <v-btn icon small class="header-button">
-                    <v-icon size="16">{{ mdiMenuDown }}</v-icon>
-                </v-btn>
-            </div>
+            <p class="text-center mb-0 text--disabled">Webcam Panel Ready</p>
         </div>
-
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <div class="no-webcam">
-                <div class="no-webcam-icon">
-                    <v-icon size="56" color="rgba(255,255,255,0.3)">{{ mdiWebcam }}</v-icon>
-                </div>
-                <p class="text-center mb-0 text--disabled">Webcam Panel Ready</p>
-            </div>
-        </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiWebcam, mdiMenuDown } from '@mdi/js'
 
 @Component({
     name: 'WebcamPanel',
+    components: {
+        Panel,
+    },
 })
 export default class WebcamPanel extends Mixins(BaseMixin) {
     mdiWebcam = mdiWebcam
@@ -48,12 +34,7 @@ export default class WebcamPanel extends Mixins(BaseMixin) {
 </script>
 
 <style scoped>
-/* 공통 스타일은 panel-common.css에서 관리 */
-
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* WebcamPanel 전용 스타일 */
 
 .webcam-content {
     position: relative;

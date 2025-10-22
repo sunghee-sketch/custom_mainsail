@@ -1,73 +1,62 @@
 <template>
-    <div class="figma-panel">
-        <!-- 패널 헤더 -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon class="nav-icon">{{ mdiPlaylistEdit }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Sequence maker</h3>
-                </div>
-            </div>
-            <div class="header-right">
-                <v-btn small class="add-step-btn" @click="addStep">
-                    <v-icon left size="16">{{ mdiPlus }}</v-icon>
-                    add step
-                </v-btn>
-                <v-btn small class="done-btn" @click="createSequence">
-                    <v-icon left size="16">{{ mdiCheck }}</v-icon>
-                    Done
-                </v-btn>
-            </div>
-        </div>
-
-        <!-- 구분선 -->
-        <div class="panel-divider"></div>
-
-        <!-- 패널 내용 -->
-        <div class="panel-content">
-            <div class="sequence-list">
-                <!-- 활성 시퀀스 -->
-                <div v-if="activeSequence" class="sequence-item active" @click="selectSequence(activeSequence)">
-                    <div class="sequence-content">
-                        <div class="sequence-icon">
-                            <v-icon>{{ mdiPlayCircle }}</v-icon>
-                        </div>
-                        <div class="sequence-info">
-                            <div class="sequence-name">{{ activeSequence.name }}</div>
-                        </div>
+    <panel
+        :title="$t('Panels.SequenceMakerPanel.SequenceMaker')"
+        :icon="mdiPlaylistEdit"
+        card-class="sequence-maker-panel">
+        <template #buttons>
+            <v-btn small class="add-step-btn" @click="addStep">
+                <v-icon left size="16">{{ mdiPlus }}</v-icon>
+                add step
+            </v-btn>
+            <v-btn small class="done-btn" @click="createSequence">
+                <v-icon left size="16">{{ mdiCheck }}</v-icon>
+                Done
+            </v-btn>
+        </template>
+        <div class="sequence-list">
+            <!-- 활성 시퀀스 -->
+            <div v-if="activeSequence" class="sequence-item active" @click="selectSequence(activeSequence)">
+                <div class="sequence-content">
+                    <div class="sequence-icon">
+                        <v-icon>{{ mdiPlayCircle }}</v-icon>
+                    </div>
+                    <div class="sequence-info">
+                        <div class="sequence-name">{{ activeSequence.name }}</div>
                     </div>
                 </div>
+            </div>
 
-                <!-- 빈 시퀀스 슬롯들 -->
-                <div
-                    v-for="(slot, index) in emptySlots"
-                    :key="'slot-' + index"
-                    class="sequence-item empty"
-                    @click="createNewSequence(index)">
-                    <div class="sequence-content">
-                        <div class="sequence-icon">
-                            <v-icon>{{ mdiPlusCircleOutline }}</v-icon>
-                        </div>
-                        <div class="sequence-info">
-                            <div class="sequence-name">Empty slot {{ index + 1 }}</div>
-                        </div>
+            <!-- 빈 시퀀스 슬롯들 -->
+            <div
+                v-for="(slot, index) in emptySlots"
+                :key="'slot-' + index"
+                class="sequence-item empty"
+                @click="createNewSequence(index)">
+                <div class="sequence-content">
+                    <div class="sequence-icon">
+                        <v-icon>{{ mdiPlusCircleOutline }}</v-icon>
+                    </div>
+                    <div class="sequence-info">
+                        <div class="sequence-name">Empty slot {{ index + 1 }}</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiPlaylistEdit, mdiPlus, mdiCheck, mdiPlayCircle, mdiPlusCircleOutline } from '@mdi/js'
 
 @Component({
     name: 'SequenceMakerPanel',
+    components: {
+        Panel,
+    },
 })
 export default class SequenceMakerPanel extends Mixins(BaseMixin) {
     mdiPlaylistEdit = mdiPlaylistEdit

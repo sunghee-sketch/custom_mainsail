@@ -1,53 +1,42 @@
 <template>
-    <div class="figma-panel method-list-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon class="nav-icon">{{ mdiFlaskEmptyPlusOutline }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Method list</h3>
-                </div>
+    <panel
+        :title="$t('Panels.MethodListPanel.MethodList')"
+        :icon="mdiFlaskEmptyPlusOutline"
+        card-class="method-list-panel">
+        <!-- Search Input -->
+        <div class="search-container">
+            <div class="search-input">
+                <v-icon class="search-icon">{{ mdiMagnify }}</v-icon>
+                <input v-model="searchQuery" type="text" placeholder="Search methods..." class="search-field" />
             </div>
         </div>
 
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Search Input -->
-            <div class="search-container">
-                <div class="search-input">
-                    <v-icon class="search-icon">{{ mdiMagnify }}</v-icon>
-                    <input v-model="searchQuery" type="text" placeholder="Search methods..." class="search-field" />
-                </div>
-            </div>
-
-            <!-- Method List -->
-            <div class="method-list">
-                <div
-                    v-for="(method, index) in filteredMethods"
-                    :key="index"
-                    class="method-item"
-                    :class="{ active: selectedMethod === method.id }"
-                    @click="selectMethod(method.id)">
-                    <span class="method-name">{{ method.name }}</span>
-                </div>
+        <!-- Method List -->
+        <div class="method-list">
+            <div
+                v-for="(method, index) in filteredMethods"
+                :key="index"
+                class="method-item"
+                :class="{ active: selectedMethod === method.id }"
+                @click="selectMethod(method.id)">
+                <span class="method-name">{{ method.name }}</span>
             </div>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiFlaskEmptyPlusOutline, mdiMagnify } from '@mdi/js'
 
 @Component({
     name: 'MethodListPanel',
+    components: {
+        Panel,
+    },
 })
 export default class MethodListPanel extends Mixins(BaseMixin) {
     mdiFlaskEmptyPlusOutline = mdiFlaskEmptyPlusOutline

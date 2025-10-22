@@ -1,61 +1,47 @@
 <template>
-    <div class="figma-panel details-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon class="nav-icon">{{ mdiInformation }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Details</h3>
-                </div>
+    <panel :title="$t('Panels.DetailsPanel.Details')" :icon="mdiInformation" card-class="details-panel">
+        <!-- Current Path -->
+        <div class="path-info">
+            <span class="path-label">Current path:</span>
+            <span class="path-value">/gcodes</span>
+        </div>
+
+        <!-- Search Input -->
+        <div class="search-container">
+            <div class="search-input">
+                <v-icon class="search-icon">{{ mdiMagnify }}</v-icon>
+                <input v-model="searchQuery" type="text" placeholder="Search..." class="search-field" />
             </div>
         </div>
 
-        <!-- Divider -->
-        <div class="panel-divider"></div>
+        <!-- Disk Info -->
+        <div class="disk-info">
+            <span class="disk-label">Free disk:</span>
+            <span class="disk-value">47.3 GB</span>
+        </div>
 
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Current Path -->
-            <div class="path-info">
-                <span class="path-label">Current path:</span>
-                <span class="path-value">/gcodes</span>
-            </div>
-
-            <!-- Search Input -->
-            <div class="search-container">
-                <div class="search-input">
-                    <v-icon class="search-icon">{{ mdiMagnify }}</v-icon>
-                    <input v-model="searchQuery" type="text" placeholder="Search..." class="search-field" />
-                </div>
-            </div>
-
-            <!-- Disk Info -->
-            <div class="disk-info">
-                <span class="disk-label">Free disk:</span>
-                <span class="disk-value">47.3 GB</span>
-            </div>
-
-            <!-- File List -->
-            <div class="file-list">
-                <div v-for="(file, index) in filteredFiles" :key="index" class="file-item">
-                    <span class="file-name">{{ file.name }}</span>
-                    <span class="file-size">{{ file.size }}</span>
-                </div>
+        <!-- File List -->
+        <div class="file-list">
+            <div v-for="(file, index) in filteredFiles" :key="index" class="file-item">
+                <span class="file-name">{{ file.name }}</span>
+                <span class="file-size">{{ file.size }}</span>
             </div>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
+import Panel from '@/components/ui/Panel.vue'
 import { mdiInformation, mdiMagnify } from '@mdi/js'
 
 @Component({
     name: 'DetailsPanel',
+    components: {
+        Panel,
+    },
 })
 export default class DetailsPanel extends Mixins(BaseMixin) {
     mdiInformation = mdiInformation

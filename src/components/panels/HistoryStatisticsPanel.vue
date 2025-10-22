@@ -1,9 +1,5 @@
 <template>
-    <panel
-        :icon="mdiChartAreaspline"
-        :title="$t('History.Statistics')"
-        card-class="history-statistics-panel"
-        :collapsible="true">
+    <panel :title="$t('History.Statistics')" :icon="mdiChartAreaspline" card-class="history-statistics-panel">
         <v-card-text class="pa-0">
             <v-row align="center">
                 <v-col class="col-12 col-sm-6 col-md-4">

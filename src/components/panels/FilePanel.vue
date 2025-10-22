@@ -1,51 +1,33 @@
 <template>
-    <div class="figma-panel">
-        <!-- 패널 헤더 -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon small>{{ icons.mdiFile }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">File</h3>
-                </div>
-            </div>
-            <div class="header-right">
-                <button class="header-button">
-                    <v-icon>{{ icons.mdiDotsVertical }}</v-icon>
-                </button>
-            </div>
-        </div>
-
-        <!-- 구분선 -->
-        <div class="panel-divider"></div>
-
-        <!-- 패널 내용 -->
-        <div class="panel-content">
-            <div class="file-tree">
-                <div
-                    v-for="item in flattenedTree"
-                    :key="item.id"
-                    class="tree-item"
-                    :class="{
-                        'is-folder': item.isFolder,
-                        'is-file': !item.isFolder,
-                        'is-expanded': item.isFolder && item.expanded,
-                        'is-collapsed': item.isFolder && !item.expanded,
-                    }"
-                    :style="{ paddingLeft: item.level * 20 + 16 + 'px' }"
-                    v-show="item.visible">
-                    <div class="item-content" @click="toggleItem(item)">
-                        <v-icon v-if="item.isFolder" class="expand-icon" small>
-                            {{ item.expanded ? icons.mdiChevronDown : icons.mdiChevronRight }}
-                        </v-icon>
-                        <v-icon v-else class="file-icon" small>{{ getFileIcon(item.name) }}</v-icon>
-                        <span class="item-name">{{ item.name }}</span>
-                    </div>
+    <panel :title="$t('Panels.FilePanel.File')" :icon="icons.mdiFile" card-class="file-panel">
+        <template #buttons>
+            <button class="header-button">
+                <v-icon>{{ icons.mdiDotsVertical }}</v-icon>
+            </button>
+        </template>
+        <div class="file-tree">
+            <div
+                v-for="item in flattenedTree"
+                :key="item.id"
+                class="tree-item"
+                :class="{
+                    'is-folder': item.isFolder,
+                    'is-file': !item.isFolder,
+                    'is-expanded': item.isFolder && item.expanded,
+                    'is-collapsed': item.isFolder && !item.expanded,
+                }"
+                :style="{ paddingLeft: item.level * 20 + 16 + 'px' }"
+                v-show="item.visible">
+                <div class="item-content" @click="toggleItem(item)">
+                    <v-icon v-if="item.isFolder" class="expand-icon" small>
+                        {{ item.expanded ? icons.mdiChevronDown : icons.mdiChevronRight }}
+                    </v-icon>
+                    <v-icon v-else class="file-icon" small>{{ getFileIcon(item.name) }}</v-icon>
+                    <span class="item-name">{{ item.name }}</span>
                 </div>
             </div>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script>
@@ -59,9 +41,13 @@ import {
     mdiCodeJson,
     mdiFile as mdiFileGeneric,
 } from '@mdi/js'
+import Panel from '@/components/ui/Panel.vue'
 
 export default {
     name: 'FilePanel',
+    components: {
+        Panel,
+    },
     data() {
         return {
             icons: {

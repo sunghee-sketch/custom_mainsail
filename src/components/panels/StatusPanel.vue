@@ -1,76 +1,67 @@
 <template>
-    <div class="figma-panel status-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="status-indicator">
-                    <div class="status-dot" :class="getStatusClass()"></div>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Status</h3>
-                </div>
+    <panel :title="$t('Panels.StatusPanel.Status')" :icon="mdiSpeedometer" card-class="status-panel">
+        <template #icon>
+            <div class="status-indicator">
+                <div class="status-dot" :class="getStatusClass()"></div>
             </div>
-            <div class="header-right">
-                <v-btn icon small class="header-button">
-                    <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
+        </template>
+        <template #buttons>
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
+            </v-btn>
+        </template>
+        <!-- Method Progress -->
+        <div class="progress-item">
+            <div class="progress-header">
+                <span class="progress-label">Method</span>
+                <span class="progress-percentage">{{ methodProgress }}%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: methodProgress + '%' }"></div>
+            </div>
+        </div>
+
+        <!-- Sequence Progress -->
+        <div class="progress-item">
+            <div class="progress-header">
+                <span class="progress-label">Sequence</span>
+                <span class="progress-percentage">{{ sequenceProgress }}%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" :style="{ width: sequenceProgress + '%' }"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <div class="action-button pause-button">
+                <span class="button-label">Pause</span>
+                <v-btn icon class="button-icon">
+                    <v-icon size="16">{{ mdiPause }}</v-icon>
+                </v-btn>
+            </div>
+            <div class="action-button stop-button">
+                <span class="button-label">Stop</span>
+                <v-btn icon class="button-icon">
+                    <v-icon size="16">{{ mdiStop }}</v-icon>
                 </v-btn>
             </div>
         </div>
-
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Method Progress -->
-            <div class="progress-item">
-                <div class="progress-header">
-                    <span class="progress-label">Method</span>
-                    <span class="progress-percentage">{{ methodProgress }}%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" :style="{ width: methodProgress + '%' }"></div>
-                </div>
-            </div>
-
-            <!-- Sequence Progress -->
-            <div class="progress-item">
-                <div class="progress-header">
-                    <span class="progress-label">Sequence</span>
-                    <span class="progress-percentage">{{ sequenceProgress }}%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" :style="{ width: sequenceProgress + '%' }"></div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons">
-                <div class="action-button pause-button">
-                    <span class="button-label">Pause</span>
-                    <v-btn icon class="button-icon">
-                        <v-icon size="16">{{ mdiPause }}</v-icon>
-                    </v-btn>
-                </div>
-                <div class="action-button stop-button">
-                    <span class="button-label">Stop</span>
-                    <v-btn icon class="button-icon">
-                        <v-icon size="16">{{ mdiStop }}</v-icon>
-                    </v-btn>
-                </div>
-            </div>
-        </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
-import { mdiDotsVertical, mdiPause, mdiStop } from '@mdi/js'
+import Panel from '@/components/ui/Panel.vue'
+import { mdiDotsVertical, mdiPause, mdiStop, mdiSpeedometer } from '@mdi/js'
 
 @Component({
     name: 'StatusPanel',
+    components: {
+        Panel,
+    },
 })
 export default class StatusPanel extends Mixins(BaseMixin) {
     mdiDotsVertical = mdiDotsVertical
@@ -105,12 +96,7 @@ export default class StatusPanel extends Mixins(BaseMixin) {
 </script>
 
 <style scoped>
-/* 공통 스타일은 panel-common.css에서 관리 */
-
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* StatusPanel 전용 스타일 */
 
 .status-indicator {
     width: 20px;

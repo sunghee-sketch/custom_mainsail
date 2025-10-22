@@ -1,56 +1,42 @@
 <template>
-    <div v-if="klipperReadyForGui" class="figma-panel toolhead-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <v-icon class="nav-icon">{{ mdiGamepad }}</v-icon>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Manual Control</h3>
-                </div>
-            </div>
-            <div class="header-right">
-                <v-btn icon small class="header-button">
-                    <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
-                </v-btn>
-            </div>
-        </div>
-
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- MOVE TO CONTROL -->
-            <move-to-control />
-            <!-- AXIS CONTROL -->
-            <v-container v-if="axisControlVisible">
-                <component :is="`${controlStyle}-control`" />
-            </v-container>
-            <!-- Z-OFFSET CONTROL -->
-            <v-divider v-if="showZOffset" />
-            <v-container v-if="showZOffset">
-                <zoffset-control />
-            </v-container>
-            <!-- SPEED FACTOR -->
-            <v-divider v-if="showSpeedFactor" />
-            <v-container v-if="showSpeedFactor">
-                <tool-slider
-                    :label="$t('Panels.ToolheadControlPanel.SpeedFactor')"
-                    :icon="mdiSpeedometer"
-                    :target="speedFactor"
-                    :min="1"
-                    :max="200"
-                    :multi="100"
-                    :step="5"
-                    :dynamic-range="true"
-                    :has-input-field="true"
-                    command="M220"
-                    attribute-name="S" />
-            </v-container>
-        </div>
-    </div>
+    <panel
+        v-if="klipperReadyForGui"
+        :title="$t('Panels.ToolheadControlPanel.ManualControl')"
+        :icon="mdiGamepad"
+        card-class="toolhead-panel">
+        <template #buttons>
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
+            </v-btn>
+        </template>
+        <!-- MOVE TO CONTROL -->
+        <move-to-control />
+        <!-- AXIS CONTROL -->
+        <v-container v-if="axisControlVisible">
+            <component :is="`${controlStyle}-control`" />
+        </v-container>
+        <!-- Z-OFFSET CONTROL -->
+        <v-divider v-if="showZOffset" />
+        <v-container v-if="showZOffset">
+            <zoffset-control />
+        </v-container>
+        <!-- SPEED FACTOR -->
+        <v-divider v-if="showSpeedFactor" />
+        <v-container v-if="showSpeedFactor">
+            <tool-slider
+                :label="$t('Panels.ToolheadControlPanel.SpeedFactor')"
+                :icon="mdiSpeedometer"
+                :target="speedFactor"
+                :min="1"
+                :max="200"
+                :multi="100"
+                :step="5"
+                :dynamic-range="true"
+                :has-input-field="true"
+                command="M220"
+                attribute-name="S" />
+        </v-container>
+    </panel>
 </template>
 
 <script lang="ts">
@@ -128,10 +114,5 @@ export default class ToolheadControlPanel extends Mixins(BaseMixin, ControlMixin
 </script>
 
 <style scoped>
-/* 공통 스타일은 panel-common.css에서 관리 */
-
-.figma-panel {
-    width: 100%;
-    height: 100%;
-}
+/* ToolheadControlPanel 전용 스타일 */
 </style>

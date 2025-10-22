@@ -2,9 +2,8 @@
     <div>
         <panel
             :title="$t('Machine.ConfigFilesPanel.ConfigFiles')"
-            card-class="machine-configfiles-panel"
             :icon="mdiInformation"
-            :collapsible="true">
+            card-class="config-files-panel">
             <v-card-text>
                 <v-row>
                     <v-col class="col-12 col-lg pr-lg-0">

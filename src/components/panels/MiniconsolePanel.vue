@@ -1,29 +1,25 @@
 <template>
-    <div v-if="socketIsConnected && klipperState !== 'disconnected'" class="figma-panel console-panel">
-        <!-- Panel Header -->
-        <div class="panel-header">
-            <div class="header-left">
-                <div class="icon-container">
-                    <span class="console-icon">$</span>
-                </div>
-                <div class="title-container">
-                    <h3 class="panel-title">Console</h3>
-                </div>
-            </div>
-            <div class="header-right">
-                <v-btn icon small class="header-button" @click="clearConsole">
-                    <v-icon size="16">{{ mdiTrashCan }}</v-icon>
-                </v-btn>
-                <command-help-modal :in-toolbar="true" @onCommand="commandClick($event)" />
-                <v-menu
-                    :offset-y="true"
-                    :close-on-content-click="false"
-                    :title="$t('Panels.MiniconsolePanel.SetupConsole')">
-                    <template #activator="{ on, attrs }">
-                        <v-btn icon small class="header-button" v-bind="attrs" v-on="on">
-                            <v-icon size="16">{{ mdiCog }}</v-icon>
-                        </v-btn>
-                    </template>
+    <panel
+        v-if="socketIsConnected && klipperState !== 'disconnected'"
+        :title="$t('Panels.MiniconsolePanel.Console')"
+        card-class="console-panel">
+        <template #icon>
+            <span class="console-icon">$</span>
+        </template>
+        <template #buttons>
+            <v-btn icon small class="header-button" @click="clearConsole">
+                <v-icon size="16">{{ mdiTrashCan }}</v-icon>
+            </v-btn>
+            <command-help-modal :in-toolbar="true" @onCommand="commandClick($event)" />
+            <v-menu
+                :offset-y="true"
+                :close-on-content-click="false"
+                :title="$t('Panels.MiniconsolePanel.SetupConsole')">
+                <template #activator="{ on, attrs }">
+                    <v-btn icon small class="header-button" v-bind="attrs" v-on="on">
+                        <v-icon size="16">{{ mdiCog }}</v-icon>
+                    </v-btn>
+                </template>
                     <v-list>
                         <v-list-item v-if="consoleDirection === 'shell'" class="minHeight36">
                             <v-checkbox
@@ -64,31 +60,24 @@
                     </v-list>
                 </v-menu>
             </div>
+        </template>
+        <!-- Console Output Area -->
+        <div class="console-output">
+            <overlay-scrollbars ref="miniConsoleScroll" :style="'height: ' + consoleHeight + 'px;'" :options="{}">
+                <console-table ref="console" :events="events" :is-mini="true" @command-click="commandClick" />
+            </overlay-scrollbars>
         </div>
 
-        <!-- Divider -->
-        <div class="panel-divider"></div>
-
-        <!-- Panel Content -->
-        <div class="panel-content">
-            <!-- Console Output Area -->
-            <div class="console-output">
-                <overlay-scrollbars ref="miniConsoleScroll" :style="'height: ' + consoleHeight + 'px;'" :options="{}">
-                    <console-table ref="console" :events="events" :is-mini="true" @command-click="commandClick" />
-                </overlay-scrollbars>
+        <!-- Send Code Input -->
+        <div class="send-code-section">
+            <div class="input-container">
+                <console-textarea ref="gcodeCommandField" />
             </div>
-
-            <!-- Send Code Input -->
-            <div class="send-code-section">
-                <div class="input-container">
-                    <console-textarea ref="gcodeCommandField" />
-                </div>
-                <v-btn icon class="send-button">
-                    <v-icon size="16">{{ mdiSend }}</v-icon>
-                </v-btn>
-            </div>
+            <v-btn icon class="send-button">
+                <v-icon size="16">{{ mdiSend }}</v-icon>
+            </v-btn>
         </div>
-    </div>
+    </panel>
 </template>
 
 <script lang="ts">
@@ -169,12 +158,7 @@ export default class MiniconsolePanel extends Mixins(BaseMixin, ConsoleMixin) {
 </script>
 
 <style scoped>
-/* 공통 스타일은 panel-common.css에서 관리 */
-
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* MiniconsolePanel 전용 스타일 */
 
 .console-icon {
     color: #00bcd4;
@@ -259,12 +243,16 @@ html.theme--light .consoleTable {
 }
 
 @media (max-width: 480px) {
-    .figma-panel {
-        border-radius: 10px;
+    .console-icon {
+        font-size: 14px;
     }
 
-    .panel-header {
-        padding: 10px 12px;
+    .console-output {
+        height: 120px;
+    }
+
+    .send-code-section {
+        padding: 10px;
     }
 
     .icon-container {
