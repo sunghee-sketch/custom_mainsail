@@ -48,7 +48,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
@@ -71,14 +71,14 @@ export default class ProcedureStepsPanel extends Mixins(BaseMixin) {
             id: 1,
             title: 'Starting Deck',
             description: 'Initialize deck position',
-            icon: mdiPlay
+            icon: mdiPlay,
         },
         {
             id: 2,
             title: 'Ending Deck',
             description: 'Finalize deck position',
-            icon: mdiStop
-        }
+            icon: mdiStop,
+        },
     ]
 
     selectStep(stepId: number) {
@@ -100,10 +100,7 @@ export default class ProcedureStepsPanel extends Mixins(BaseMixin) {
 <style scoped>
 /* 공통 스타일은 panel-common.css에서 관리 */
 
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* 크기는 Dashboard에서 통합 관리 */
 
 .add-step-btn {
     background: rgba(255, 255, 255, 0.1) !important;

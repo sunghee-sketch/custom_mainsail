@@ -48,7 +48,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
@@ -81,10 +81,7 @@ export default class DetailsPanel extends Mixins(BaseMixin) {
 <style scoped>
 /* 공통 스타일은 panel-common.css에서 관리 */
 
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* 크기는 Dashboard에서 통합 관리 */
 
 .path-info {
     display: flex;

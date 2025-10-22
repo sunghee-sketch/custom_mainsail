@@ -27,9 +27,7 @@ export default class Sequence extends Mixins(BaseMixin) {
 }
 </script>
 <style scoped>
-.sequence-page {
-    padding: 24px;
-}
+/* Dashboard와 동일한 스타일 적용 */
 
 .page-header {
     margin-bottom: 32px;

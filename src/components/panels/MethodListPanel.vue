@@ -40,7 +40,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
@@ -69,9 +69,7 @@ export default class MethodListPanel extends Mixins(BaseMixin) {
 
     get filteredMethods() {
         if (!this.searchQuery) return this.methods
-        return this.methods.filter(method =>
-            method.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        )
+        return this.methods.filter((method) => method.name.toLowerCase().includes(this.searchQuery.toLowerCase()))
     }
 
     selectMethod(methodId: number) {
@@ -83,10 +81,7 @@ export default class MethodListPanel extends Mixins(BaseMixin) {
 <style scoped>
 /* 공통 스타일은 panel-common.css에서 관리 */
 
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* 크기는 Dashboard에서 통합 관리 */
 
 .search-container {
     margin-bottom: 20px;

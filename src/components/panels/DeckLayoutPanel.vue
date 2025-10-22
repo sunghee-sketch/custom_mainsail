@@ -40,7 +40,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
@@ -74,30 +74,30 @@ export default class DeckLayoutPanel extends Mixins(BaseMixin) {
 <style scoped>
 /* 공통 스타일은 panel-common.css에서 관리 */
 
-.figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
+/* 크기는 Dashboard에서 통합 관리 */
 
 .deck-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 12px;
-    height: 100%;
-    padding: 8px;
+    width: 381px;
+    height: 434px;
+    padding: 16px;
+    row-gap: 8px;
+    column-gap: 8px;
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .deck-slot {
-    background: rgba(169, 169, 169, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.8);
     border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.80);
+    background: rgba(169, 169, 169, 0.80);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex: 1 0 0;
+    align-self: stretch;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 60px;
 }
 
 .deck-slot:hover {

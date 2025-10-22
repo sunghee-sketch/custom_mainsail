@@ -1,30 +1,63 @@
 <template>
     <div class="method-page">
-        <div class="page-header">
-            <h1 class="page-title">Method</h1>
-            <p class="page-subtitle">Method configuration and management</p>
-        </div>
-
         <div class="method-content">
-            <v-card class="method-card">
-                <v-card-title>Method List Panel</v-card-title>
-                <v-card-text>
-                    <method-list-panel></method-list-panel>
-                </v-card-text>
-            </v-card>
+            <v-row v-if="isMobile">
+                <v-col>
+                    <method-list-panel class="mb-4"></method-list-panel>
+                    <deck-layout-panel class="mb-4"></deck-layout-panel>
+                    <details-panel class="mb-4"></details-panel>
+                    <procedure-steps-panel class="mb-4"></procedure-steps-panel>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="isTablet">
+                <v-col class="col-6">
+                    <method-list-panel class="mb-4"></method-list-panel>
+                    <details-panel class="mb-4"></details-panel>
+                </v-col>
+                <v-col class="col-6">
+                    <deck-layout-panel class="mb-4"></deck-layout-panel>
+                    <procedure-steps-panel class="mb-4"></procedure-steps-panel>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="isDesktop">
+                <v-col class="col-6">
+                    <method-list-panel class="mb-4"></method-list-panel>
+                    <details-panel class="mb-4"></details-panel>
+                </v-col>
+                <v-col class="col-6">
+                    <deck-layout-panel class="mb-4"></deck-layout-panel>
+                    <procedure-steps-panel class="mb-4"></procedure-steps-panel>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="isWidescreen">
+                <v-col class="col-6">
+                    <method-list-panel class="mb-4"></method-list-panel>
+                    <details-panel class="mb-4"></details-panel>
+                </v-col>
+                <v-col class="col-6">
+                    <deck-layout-panel class="mb-4"></deck-layout-panel>
+                    <procedure-steps-panel class="mb-4"></procedure-steps-panel>
+                </v-col>
+            </v-row>
         </div>
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import MethodListPanel from '@/components/panels/MethodListPanel.vue'
+import DeckLayoutPanel from '@/components/panels/DeckLayoutPanel.vue'
+import DetailsPanel from '@/components/panels/DetailsPanel.vue'
+import ProcedureStepsPanel from '@/components/panels/ProcedureStepsPanel.vue'
 
 @Component({
     components: {
         MethodListPanel,
+        DeckLayoutPanel,
+        DetailsPanel,
+        ProcedureStepsPanel,
     },
 })
 export default class Method extends Mixins(BaseMixin) {
@@ -32,34 +65,24 @@ export default class Method extends Mixins(BaseMixin) {
 }
 </script>
 <style scoped>
-.method-page {
-    padding: 24px;
-}
-
-.page-header {
-    margin-bottom: 32px;
-}
-
-.page-title {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #ffffff;
-    margin-bottom: 8px;
-}
-
-.page-subtitle {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1rem;
-}
+/* Dashboard와 동일한 스타일 적용 */
 
 .method-content {
     display: grid;
     gap: 24px;
 }
 
-.method-card {
-    background: linear-gradient(180deg, #1e1e1e 0%, #1a1a1a 100%);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 14px;
+/* Dashboard와 동일한 패널 크기 제어 */
+.method-content .figma-panel {
+    aspect-ratio: 4 / 3;
+    min-height: 300px;
+}
+
+/* 모바일 반응형 */
+@media (max-width: 480px) {
+    .method-content .figma-panel {
+        aspect-ratio: 3 / 4;
+        min-height: 250px;
+    }
 }
 </style>
