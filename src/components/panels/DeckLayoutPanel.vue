@@ -27,12 +27,7 @@
         <div class="panel-content">
             <!-- Deck Grid -->
             <div class="deck-grid">
-                <div
-                    v-for="position in deckPositions"
-                    :key="position"
-                    class="deck-slot"
-                    :class="{ occupied: isOccupied(position) }"
-                    @click="toggleSlot(position)">
+                <div v-for="position in deckPositions" :key="position" class="deck-slot">
                     <span class="slot-number">{{ position }}</span>
                 </div>
             </div>
@@ -55,19 +50,6 @@ export default class DeckLayoutPanel extends Mixins(BaseMixin) {
     mdiSettings = mdiCog
 
     deckPositions = Array.from({ length: 15 }, (_, i) => i + 1)
-    occupiedSlots = new Set([1, 3, 7, 12])
-
-    isOccupied(position: number) {
-        return this.occupiedSlots.has(position)
-    }
-
-    toggleSlot(position: number) {
-        if (this.occupiedSlots.has(position)) {
-            this.occupiedSlots.delete(position)
-        } else {
-            this.occupiedSlots.add(position)
-        }
-    }
 }
 </script>
 
@@ -78,46 +60,43 @@ export default class DeckLayoutPanel extends Mixins(BaseMixin) {
 
 .deck-grid {
     display: grid;
-    width: 381px;
-    height: 434px;
-    padding: 16px;
+    width: 100%;
+    height: 100%;
     row-gap: 8px;
     column-gap: 8px;
-    grid-template-rows: repeat(5, minmax(0, 1fr));
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    box-sizing: border-box;
 }
 
 .deck-slot {
-    border-radius: 14px;
-    border: 1px solid rgba(0, 0, 0, 0.80);
-    background: rgba(169, 169, 169, 0.80);
+    background: rgba(169, 169, 169, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    flex: 1 0 0;
-    align-self: stretch;
+    justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    aspect-ratio: 3 / 2;
 }
 
 .deck-slot:hover {
-    background: rgba(169, 169, 169, 0.9);
+    background: rgba(189, 189, 189, 0.95);
     transform: scale(1.02);
-}
-
-.deck-slot.occupied {
-    background: rgba(33, 150, 243, 0.8);
-    border-color: rgba(33, 150, 243, 1);
 }
 
 .slot-number {
     color: rgba(0, 0, 0, 0.4);
-    font-size: 24px;
-    font-family: 'SeoulNamsan CBL', Arial, sans-serif;
+    font-family: 'Arial, sans-serif';
+    font-size: 35px;
+    font-style: normal;
     font-weight: 400;
-}
-
-.deck-slot.occupied .slot-number {
-    color: rgba(255, 255, 255, 0.9);
+    line-height: 43px;
+    text-align: center;
+    user-select: none;
 }
 </style>

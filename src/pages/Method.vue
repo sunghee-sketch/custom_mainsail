@@ -71,18 +71,4 @@ export default class Method extends Mixins(BaseMixin) {
     display: grid;
     gap: 24px;
 }
-
-/* Dashboard와 동일한 패널 크기 제어 */
-.method-content .figma-panel {
-    aspect-ratio: 4 / 3;
-    min-height: 300px;
-}
-
-/* 모바일 반응형 */
-@media (max-width: 480px) {
-    .method-content .figma-panel {
-        aspect-ratio: 3 / 4;
-        min-height: 250px;
-    }
-}
 </style>
