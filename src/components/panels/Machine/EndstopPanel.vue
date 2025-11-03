@@ -1,9 +1,10 @@
 <template>
-    <panel
-        :title="$t('Machine.EndstopPanel.Endstops')"
-        :icon="mdiArrowExpandVertical"
-        card-class="machine-endstop-panel"
-        :collapsible="true">
+    <panel :title="$t('Machine.EndstopPanel.Endstops')" :icon="mdiArrowExpandVertical" card-class="endstop-panel">
+        <template #buttons>
+            <v-btn icon :loading="loadings.includes('queryEndstops')" @click="syncEndstops">
+                <v-icon>{{ mdiSync }}</v-icon>
+            </v-btn>
+        </template>
         <v-card-text class="pb-0 pt-6">
             <EndstopPanelItem v-for="item in items" :key="item.name" :item="item" />
             <v-row v-if="items.length === 0">
@@ -12,12 +13,6 @@
                 </v-col>
             </v-row>
         </v-card-text>
-        <v-card-actions class="pt-3">
-            <v-spacer />
-            <v-btn icon :loading="loadings.includes('queryEndstops')" @click="syncEndstops">
-                <v-icon>{{ mdiSync }}</v-icon>
-            </v-btn>
-        </v-card-actions>
     </panel>
 </template>
 

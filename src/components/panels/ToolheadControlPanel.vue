@@ -1,88 +1,13 @@
 <template>
     <panel
         v-if="klipperReadyForGui"
+        :title="$t('Panels.ToolheadControlPanel.ManualControl')"
         :icon="mdiGamepad"
-        :title="$t('Panels.ToolheadControlPanel.Headline')"
-        :collapsible="true"
-        card-class="toolhead-control-panel">
-        <!-- PANEL-HEADER 3-DOT-MENU -->
+        card-class="toolhead-panel">
         <template #buttons>
-            <v-menu v-if="showButtons" left offset-y :close-on-content-click="false" class="pa-0">
-                <template #activator="{ on, attrs }">
-                    <v-btn icon tile v-bind="attrs" :disabled="['printing'].includes(printer_state)" v-on="on">
-                        <v-icon>{{ mdiDotsVertical }}</v-icon>
-                    </v-btn>
-                </template>
-                <v-list dense>
-                    <v-list-item v-if="controlStyle !== 'bars' && actionButton !== 'm84'">
-                        <v-btn small style="width: 100%" @click="doSend('M84')">
-                            <v-icon left small>{{ mdiEngineOff }}</v-icon>
-                            {{ $t('Settings.ControlTab.MotorsOff', { isDefault: '' }) }}
-                        </v-btn>
-                    </v-list-item>
-                    <v-list-item v-if="controlStyle !== 'bars' && existsZtilt && actionButton !== 'ztilt'">
-                        <v-btn small style="width: 100%" @click="doZtilt">Z-Tilt Adjust</v-btn>
-                    </v-list-item>
-                    <v-list-item v-if="controlStyle !== 'bars' && existsQGL && actionButton !== 'qgl'">
-                        <v-btn small style="width: 100%" @click="doQGL">Quad Gantry Level</v-btn>
-                    </v-list-item>
-                    <!-- SPECIAL BUTTONS ALWAYS INSIDE 3-DOT MENU -->
-                    <v-list-item v-if="existsBedTilt">
-                        <v-btn small style="width: 100%" @click="doSend('BED_TILT_CALIBRATE')">
-                            BED TILT CALIBRATE
-                        </v-btn>
-                    </v-list-item>
-                    <v-list-item v-if="existsBedScrews">
-                        <v-btn small style="width: 100%" @click="doSend('BED_SCREWS_ADJUST')">BED SCREWS ADJUST</v-btn>
-                    </v-list-item>
-                    <v-list-item v-if="existsDeltaCalibrate">
-                        <v-btn small style="width: 100%" @click="doSend('DELTA_CALIBRATE')">DELTA CALIBRATE</v-btn>
-                    </v-list-item>
-                    <v-list-item v-if="existsScrewsTilt">
-                        <div class="d-flex align-center" style="width: 100%">
-                            <v-btn
-                                small
-                                style="border-top-right-radius: 0; border-bottom-right-radius: 0"
-                                @click="doSend('SCREWS_TILT_CALCULATE')">
-                                SCREWS TILT CALCULATE
-                            </v-btn>
-                            <v-menu offset-y left :close-on-content-click="false">
-                                <template #activator="{ on, attrs }">
-                                    <v-btn
-                                        small
-                                        v-bind="attrs"
-                                        class="px-0"
-                                        style="min-width: 32px; border-top-left-radius: 0; border-bottom-left-radius: 0"
-                                        v-on="on">
-                                        <v-icon>{{ mdiMenuDown }}</v-icon>
-                                    </v-btn>
-                                </template>
-                                <v-list dense>
-                                    <v-list-item>
-                                        <v-btn
-                                            small
-                                            style="width: 100%"
-                                            @click="doSend('SCREWS_TILT_CALCULATE DIRECTION=CW')">
-                                            <v-icon left small style="transform: scaleX(-1)">{{ mdiRestore }}</v-icon>
-                                            <span>CW</span>
-                                        </v-btn>
-                                    </v-list-item>
-                                    <v-list-item>
-                                        <v-btn
-                                            small
-                                            style="width: 100%"
-                                            @click="doSend('SCREWS_TILT_CALCULATE DIRECTION=CCW')">
-                                            <v-icon left small>{{ mdiRestore }}</v-icon>
-                                            <span>CCW</span>
-                                        </v-btn>
-                                    </v-list-item>
-                                </v-list>
-                            </v-menu>
-                        </div>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
-            <toolhead-panel-settings />
+            <v-btn icon small class="header-button">
+                <v-icon size="16">{{ mdiDotsVertical }}</v-icon>
+            </v-btn>
         </template>
         <!-- MOVE TO CONTROL -->
         <move-to-control />
@@ -187,3 +112,7 @@ export default class ToolheadControlPanel extends Mixins(BaseMixin, ControlMixin
     }
 }
 </script>
+
+<style scoped>
+/* ToolheadControlPanel 전용 스타일 */
+</style>

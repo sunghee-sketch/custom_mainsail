@@ -1,10 +1,6 @@
 <template>
     <div>
-        <panel
-            :title="$t('Machine.LogfilesPanel.Logfiles')"
-            :icon="mdiFileDocumentEdit"
-            card-class="machine-logfiles-panel"
-            :collapsible="true">
+        <panel :title="$t('Machine.LogfilesPanel.Logfiles')" :icon="mdiFileDocumentEdit" card-class="logfiles-panel">
             <template #buttons>
                 <v-tooltip top>
                     <template #activator="{ on, attrs }">

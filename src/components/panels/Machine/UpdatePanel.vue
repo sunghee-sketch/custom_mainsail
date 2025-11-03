@@ -4,8 +4,7 @@
             v-if="enableUpdateManager"
             :title="$t('Machine.UpdatePanel.UpdateManager')"
             :icon="mdiUpdate"
-            card-class="machine-update-panel"
-            :collapsible="true">
+            card-class="update-panel">
             <template #buttons>
                 <v-tooltip top>
                     <template #activator="{ on, attrs }">

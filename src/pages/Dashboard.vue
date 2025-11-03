@@ -2,23 +2,29 @@
     <div>
         <v-row v-if="isMobile">
             <v-col>
-                <status-panel></status-panel>
+                <status-panel class="mb-4"></status-panel>
+                <webcam-panel class="mb-4"></webcam-panel>
+                <sequence-list-panel class="mb-4"></sequence-list-panel>
                 <template v-for="component in mobileLayout">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-mobileLayout-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
         </v-row>
         <v-row v-else-if="isTablet">
             <v-col class="col-6">
-                <status-panel></status-panel>
+                <status-panel class="mb-4"></status-panel>
+                <webcam-panel class="mb-4"></webcam-panel>
+                <sequence-list-panel class="mb-4"></sequence-list-panel>
                 <template v-for="component in tabletLayout1">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-tabletLayout1-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
             <v-col class="col-6">
@@ -26,18 +32,22 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-tabletLayout2-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
         </v-row>
         <v-row v-else-if="isDesktop">
             <v-col class="col-5">
-                <status-panel></status-panel>
+                <status-panel class="mb-4"></status-panel>
+                <webcam-panel class="mb-4"></webcam-panel>
+                <sequence-list-panel class="mb-4"></sequence-list-panel>
                 <template v-for="component in desktopLayout1">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout1-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
             <v-col class="col-7">
@@ -45,18 +55,22 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout2-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
         </v-row>
         <v-row v-else-if="isWidescreen">
             <v-col class="col-3">
-                <status-panel></status-panel>
+                <status-panel class="mb-4"></status-panel>
+                <webcam-panel class="mb-4"></webcam-panel>
+                <sequence-list-panel class="mb-4"></sequence-list-panel>
                 <template v-for="component in widescreenLayout1">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout1-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
             <v-col class="col-5">
@@ -64,7 +78,8 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout2-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
             <v-col class="col-4">
@@ -72,7 +87,8 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout3-' + component.name"
-                        :panel-id="extractPanelId(component.name)"></component>
+                        :panel-id="extractPanelId(component.name)"
+                        class="mb-4"></component>
                 </template>
             </v-col>
         </v-row>
@@ -82,35 +98,23 @@
 <script lang="ts">
 import Component from 'vue-class-component'
 import { Mixins } from 'vue-property-decorator'
-import ExtruderControlPanel from '@/components/panels/ExtruderControlPanel.vue'
 import DashboardMixin from '@/components/mixins/dashboard'
 import KlippyStatePanel from '@/components/panels/KlippyStatePanel.vue'
-import MachineSettingsPanel from '@/components/panels/MachineSettingsPanel.vue'
-import MacrogroupPanel from '@/components/panels/MacrogroupPanel.vue'
-import MacrosPanel from '@/components/panels/MacrosPanel.vue'
 import MiniconsolePanel from '@/components/panels/MiniconsolePanel.vue'
 import MinSettingsPanel from '@/components/panels/MinSettingsPanel.vue'
-import MiscellaneousPanel from '@/components/panels/MiscellaneousPanel.vue'
+import SequenceListPanel from '@/components/panels/SequenceListPanel.vue'
 import SpoolmanPanel from '@/components/panels/SpoolmanPanel.vue'
 import StatusPanel from '@/components/panels/StatusPanel.vue'
-import ToolheadControlPanel from '@/components/panels/ToolheadControlPanel.vue'
-import TemperaturePanel from '@/components/panels/TemperaturePanel.vue'
 import WebcamPanel from '@/components/panels/WebcamPanel.vue'
 
 @Component({
     components: {
-        ExtruderControlPanel,
         KlippyStatePanel,
-        MachineSettingsPanel,
-        MacrogroupPanel,
-        MacrosPanel,
         MiniconsolePanel,
         MinSettingsPanel,
-        MiscellaneousPanel,
+        SequenceListPanel,
         SpoolmanPanel,
         StatusPanel,
-        ToolheadControlPanel,
-        TemperaturePanel,
         WebcamPanel,
     },
 })

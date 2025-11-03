@@ -7,10 +7,14 @@ import History from '../pages/History.vue'
 import Timelapse from '../pages/Timelapse.vue'
 import Machine from '../pages/Machine.vue'
 import { AsyncComponent, Component } from 'vue'
-import Dashboard2 from '../pages/Dashboard2.vue'
+
+// Create placeholder components for new routes
+const Device = () => import('../pages/Device.vue')
+const Method = () => import('../pages/Method.vue')
+const Sequence = () => import('../pages/Sequence.vue')
 
 import {
-    mdiMonitorDashboard,
+    mdiViewDashboard,
     mdiWebcam,
     mdiConsoleLine,
     mdiGrid,
@@ -18,7 +22,10 @@ import {
     mdiVideo3d,
     mdiHistory,
     mdiTimelapse,
-    mdiWrench,
+    mdiCogOutline,
+    mdiMemory,
+    mdiFlaskEmptyPlusOutline,
+    mdiPlaylistPlay,
 } from '@mdi/js'
 
 const routes: AppRoute[] = [
@@ -26,21 +33,41 @@ const routes: AppRoute[] = [
         name: 'dashboard',
         title: 'Dashboard',
         path: '/',
-        icon: mdiMonitorDashboard,
+        icon: mdiViewDashboard,
         component: Dashboard,
         alwaysShow: true,
         showInNavi: true,
         position: 10,
     },
     {
-        name: 'dashboard2',
-        title: 'Dashboard2',
-        path: '/dashboard2',
-        icon: mdiMonitorDashboard,
-        component: Dashboard2,
+        name: 'device',
+        title: 'Device',
+        path: '/device',
+        icon: mdiMemory,
+        component: Device,
         alwaysShow: true,
         showInNavi: true,
         position: 15,
+    },
+    {
+        name: 'method',
+        title: 'Method',
+        path: '/method',
+        icon: mdiFlaskEmptyPlusOutline,
+        component: Method,
+        alwaysShow: true,
+        showInNavi: true,
+        position: 18,
+    },
+    {
+        name: 'sequence',
+        title: 'Sequence',
+        path: '/sequence',
+        icon: mdiPlaylistPlay,
+        component: Sequence,
+        alwaysShow: true,
+        showInNavi: true,
+        position: 22,
     },
     {
         name: 'farm',
@@ -67,8 +94,8 @@ const routes: AppRoute[] = [
         path: '/console',
         icon: mdiConsoleLine,
         component: Console,
-        alwaysShow: true,
-        showInNavi: true,
+        alwaysShow: false,
+        showInNavi: false,
         klipperIsConnected: true,
         position: 30,
     },
@@ -79,7 +106,7 @@ const routes: AppRoute[] = [
         icon: mdiGrid,
         component: () => import('../pages/Heightmap.vue'),
         alwaysShow: false,
-        showInNavi: true,
+        showInNavi: false,
         klipperComponent: 'bed_mesh',
         position: 40,
     },
@@ -89,8 +116,8 @@ const routes: AppRoute[] = [
         path: '/files',
         icon: mdiFileDocumentMultipleOutline,
         component: Files,
-        alwaysShow: true,
-        showInNavi: true,
+        alwaysShow: false,
+        showInNavi: false,
         registeredDirectory: 'gcodes',
         position: 50,
         fullscreen: true,
@@ -101,8 +128,8 @@ const routes: AppRoute[] = [
         path: '/viewer',
         icon: mdiVideo3d,
         component: () => import('../pages/Viewer.vue'),
-        alwaysShow: true,
-        showInNavi: true,
+        alwaysShow: false,
+        showInNavi: false,
         position: 60,
         fullscreen: true,
     },
@@ -129,10 +156,10 @@ const routes: AppRoute[] = [
         position: 80,
     },
     {
-        name: 'machine',
-        title: 'Machine',
+        name: 'config',
+        title: 'Config',
         path: '/config',
-        icon: mdiWrench,
+        icon: mdiCogOutline,
         component: Machine,
         alwaysShow: true,
         showInNavi: true,
