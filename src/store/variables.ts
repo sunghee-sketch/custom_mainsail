@@ -102,6 +102,7 @@ export const allDashboardPanels = [
     'spoolman',
     'temperature',
     'webcam',
+    'sequence-list',
 ]
 
 export const thumbnailSmallMin = 30
