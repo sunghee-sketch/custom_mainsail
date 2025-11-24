@@ -2,29 +2,23 @@
     <div>
         <v-row v-if="isMobile">
             <v-col>
-                <status-panel class="mb-4"></status-panel>
-                <webcam-panel class="mb-4"></webcam-panel>
-                <sequence-list-panel class="mb-4"></sequence-list-panel>
+                <status-panel></status-panel>
                 <template v-for="component in mobileLayout">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-mobileLayout-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
         </v-row>
         <v-row v-else-if="isTablet">
             <v-col class="col-6">
-                <status-panel class="mb-4"></status-panel>
-                <webcam-panel class="mb-4"></webcam-panel>
-                <sequence-list-panel class="mb-4"></sequence-list-panel>
+                <status-panel></status-panel>
                 <template v-for="component in tabletLayout1">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-tabletLayout1-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
             <v-col class="col-6">
@@ -32,22 +26,18 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-tabletLayout2-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
         </v-row>
         <v-row v-else-if="isDesktop">
             <v-col class="col-5">
-                <status-panel class="mb-4"></status-panel>
-                <webcam-panel class="mb-4"></webcam-panel>
-                <sequence-list-panel class="mb-4"></sequence-list-panel>
+                <status-panel></status-panel>
                 <template v-for="component in desktopLayout1">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout1-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
             <v-col class="col-7">
@@ -55,22 +45,18 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout2-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
         </v-row>
         <v-row v-else-if="isWidescreen">
             <v-col class="col-3">
-                <status-panel class="mb-4"></status-panel>
-                <webcam-panel class="mb-4"></webcam-panel>
-                <sequence-list-panel class="mb-4"></sequence-list-panel>
+                <status-panel></status-panel>
                 <template v-for="component in widescreenLayout1">
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout1-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
             <v-col class="col-5">
@@ -78,8 +64,7 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout2-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
             <v-col class="col-4">
@@ -87,8 +72,7 @@
                     <component
                         :is="extractPanelName(component.name)"
                         :key="'dashboard-desktopLayout3-' + component.name"
-                        :panel-id="extractPanelId(component.name)"
-                        class="mb-4"></component>
+                        :panel-id="extractPanelId(component.name)"></component>
                 </template>
             </v-col>
         </v-row>
