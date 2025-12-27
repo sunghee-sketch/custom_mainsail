@@ -20,6 +20,6 @@ export const getters: GetterTree<SocketState, RootState> = {
     },
 
     getWebsocketUrl: (state, getters) => {
-        return state.protocol + ':' + getters['getUrl'] + '/ws'
+        return state.protocol + ':' + getters['getUrl'] + '/websocket'
     },
 }
