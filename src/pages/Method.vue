@@ -69,7 +69,7 @@
                             <div class="header-right">
                                 <v-btn
                                     color="primary"
-                                    class="text-none mr-2"
+                                    class="text-none mr-4"
                                     small
                                     :disabled="!isLiquidFormValid"
                                     @click="saveLiquid">
@@ -176,6 +176,76 @@
                                         rows="4"></v-textarea>
                                 </div>
                             </v-form>
+                        </div>
+                    </v-card>
+                </v-dialog>
+
+                <!-- Labware Selection Modal -->
+                <v-dialog v-model="showLabwareModal" max-width="650px" persistent>
+                    <v-card dark class="liquid-modal-card">
+                        <!-- Panel Header -->
+                        <div class="liquid-modal-header">
+                            <div class="header-left">
+                                <div class="icon-container">
+                                    <v-icon class="nav-icon">{{ mdiFlask }}</v-icon>
+                                </div>
+                                <div class="title-container">
+                                    <h3 class="panel-title">Edit labware</h3>
+                                </div>
+                            </div>
+                            <div class="header-right">
+                                <div class="part-indicator">Part 1/2</div>
+                                <v-btn icon small @click="closeLabwareModal">
+                                    <v-icon>{{ mdiClose }}</v-icon>
+                                </v-btn>
+                            </div>
+                        </div>
+
+                        <!-- Panel Divider -->
+                        <div class="panel-divider"></div>
+
+                        <!-- Panel Content -->
+                        <div class="liquid-modal-content">
+                            <!-- Search Bar -->
+                            <v-text-field
+                                v-model="labwareSearch"
+                                placeholder="Search for labwares"
+                                outlined
+                                dense
+                                dark
+                                hide-details
+                                clearable
+                                class="labware-search">
+                                <template v-slot:prepend-inner>
+                                    <div class="search-icon-wrapper">
+                                        <v-icon small class="search-icon">{{ mdiMagnify }}</v-icon>
+                                    </div>
+                                </template>
+                            </v-text-field>
+
+                            <!-- Labware List -->
+                            <div class="labware-list">
+                                <div
+                                    v-for="labware in filteredLabwares"
+                                    :key="labware"
+                                    class="labware-item"
+                                    :class="{ selected: selectedLabware === labware }"
+                                    @click="selectLabware(labware)">
+                                    {{ labware }}
+                                </div>
+                            </div>
+
+                            <!-- Continue Button -->
+                            <div class="labware-modal-actions">
+                                <v-btn
+                                    color="primary"
+                                    class="text-none"
+                                    block
+                                    :disabled="!selectedLabware"
+                                    @click="continueLabware">
+                                    Continue
+                                </v-btn>
+                            </div>
                         </div>
                     </v-card>
                 </v-dialog>
@@ -333,6 +403,8 @@ import {
     mdiContentSave,
     mdiWater,
     mdiClose,
+    mdiFlask,
+    mdiMagnify,
 } from '@mdi/js'
 
 interface Step {
@@ -369,6 +441,8 @@ export default class Method extends Mixins(BaseMixin) {
     mdiContentSave = mdiContentSave
     mdiWater = mdiWater
     mdiClose = mdiClose
+    mdiFlask = mdiFlask
+    mdiMagnify = mdiMagnify
 
     // Data
     currentStep = 1
@@ -413,6 +487,14 @@ export default class Method extends Mixins(BaseMixin) {
         '#000000', // Black
     ]
 
+    // Labware Modal
+    showLabwareModal = false
+    labwareSearch = ''
+    selectedLabware: string | null = null
+    selectedDeckPosition: number | null = null
+
+    labwares = ['Tip racks', 'Tube racks', 'Well plates', 'Reservoirs', 'Aluminum blocks', 'Adapters', 'Lids']
+
     steps: Step[] = [
         { number: 1, label: 'Configure Deck Layout' },
         { number: 2, label: 'Define Steps' },
@@ -437,6 +519,15 @@ export default class Method extends Mixins(BaseMixin) {
 
     get isLiquidFormValid(): boolean {
         return !!(this.liquidForm.name && this.liquidForm.liquidClass && this.liquidForm.color)
+    }
+
+    get filteredLabwares(): string[] {
+        if (!this.labwareSearch) {
+            return this.labwares
+        }
+        return this.labwares.filter((labware) =>
+            labware.toLowerCase().includes(this.labwareSearch.toLowerCase())
+        )
     }
 
     clearError(field: string): void {
@@ -497,7 +588,30 @@ export default class Method extends Mixins(BaseMixin) {
 
     selectDeck(position: number): void {
         this.selectedDeck = position
-        // TODO: Open modal for deck configuration
+        this.selectedDeckPosition = position
+        this.showLabwareModal = true
+    }
+
+    selectLabware(labware: string): void {
+        this.selectedLabware = labware
+    }
+
+    closeLabwareModal(): void {
+        this.showLabwareModal = false
+        this.labwareSearch = ''
+        this.selectedLabware = null
+        this.selectedDeckPosition = null
+    }
+
+    continueLabware(): void {
+        if (!this.selectedLabware || this.selectedDeckPosition === null) {
+            return
+        }
+
+        // TODO: Save labware to deck position and open Part 2/2 modal
+        this.deckPositions[this.selectedDeckPosition] = this.selectedLabware
+        this.$toast.success(`${this.selectedLabware} added to position ${this.selectedDeckPosition}`)
+        this.closeLabwareModal()
     }
 
     selectDeckInStep2(position: number): void {
@@ -1004,7 +1118,7 @@ export default class Method extends Mixins(BaseMixin) {
     font-family: Arial, sans-serif;
     font-weight: 400;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 20px;
     margin: 0;
 }
 
@@ -1148,6 +1262,65 @@ export default class Method extends Mixins(BaseMixin) {
     color: #ff5252;
     font-size: 12px;
     margin-top: 4px;
+}
+
+/* Labware Modal */
+.part-indicator {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin-right: 12px;
+}
+
+.labware-search {
+    margin-bottom: 16px;
+}
+
+.labware-search >>> .v-input__prepend-inner {
+    align-self: center !important;
+    margin-top: 0 !important;
+}
+
+.search-icon-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    color: rgba(255, 255, 255, 0.5);
+    margin-right: 8px;
+}
+
+.labware-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+.labware-item {
+    padding: 14px 16px;
+    background: #2a2a2a;
+    border: 1px solid #3a3a3a;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+}
+
+.labware-item:hover {
+    border-color: #1976d2;
+    background: #2f2f2f;
+}
+
+.labware-item.selected {
+    border-color: #1976d2;
+    background: #1e3a5f;
+}
+
+.labware-modal-actions {
+    position: relative;
+    z-index: 2;
 }
 
 /* Responsive */
