@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/jiwonpark/Documents/과외/최성희님/virtual-klipper/**)",
+      "Bash(ls:*)",
+      "Bash(grep:*)",
+      "Bash(done)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(npm run lint)",
+      "Bash(npx vue-tsc:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
